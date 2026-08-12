@@ -13,7 +13,7 @@ export interface TextWrapperProps extends HTMLAttributes<HTMLDivElement> {
   leading?: React.ReactNode; // Fallback for custom blocks (like color squares)
   text?: string | React.ReactNode;
   trailing?: React.ReactNode;
-  textColor: string;
+  textColor?: string;
 }
 
 export const TextWrapper = forwardRef<HTMLDivElement, TextWrapperProps>(
@@ -50,7 +50,7 @@ export const TextWrapper = forwardRef<HTMLDivElement, TextWrapperProps>(
                 height={200}
                 width={200}
                 alt={typeof text === "string" ? text : "Avatar"}
-                className="h-6 w-6 rounded-full object-cover"
+                className="h-6 w-6 object-contain rounded-md shrink-0"
               />
             ) : icon ? (
               icon
