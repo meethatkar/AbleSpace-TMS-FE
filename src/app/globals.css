@@ -7,18 +7,12 @@
   --foreground: #171717;
   --sidebar-bg: #fafafa;
   --primary: #171717;
-<<<<<<< Updated upstream
-  --base-border: #E5E5E5;
+  --base-border: #e5e5e5;
   --muted-foreground: #a3a3a3;
   --subtle-text: #737373;
-  
-  --badge-bg: #DC26261A;
-  --badge-text: #DC2626;
-=======
-  --sidebar-accent: #f5f5f5;
   --badge-bg: #dc26261a;
   --badge-text: #dc2626;
->>>>>>> Stashed changes
+  --sidebar-accent: #f5f5f5;
 }
 
 .dark {
@@ -26,13 +20,10 @@
   --foreground: #f8fafc;
   --sidebar-bg: #0f172a;
   --primary: #f8fafc;
-<<<<<<< Updated upstream
+  --sidebar-accent: #1e293b;
   --base-border: #1e293b;
   --muted-foreground: #737373;
   --subtle-text: #a3a3a3;
-=======
-  --sidebar-accent: #1e293b;
->>>>>>> Stashed changes
 }
 
 /* Color Mode Accents */
