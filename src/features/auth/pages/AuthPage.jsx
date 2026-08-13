@@ -2,8 +2,21 @@
 import React from "react";
 import { Button } from "@/components/ui/Button";
 import { TextWrapper } from "@/components/ui/TextWrapper";
+import { useAuth } from "../hooks/useAuth";
+import { useRouter } from "next/navigation";
+import { GoogleLogin } from "@react-oauth/google";
 
 const AuthPage = () => {
+  const router = useRouter();
+  const { handleGuestLogin, handleGoogleLogin, isLoading, error } = useAuth();
+
+  const onGuestLogin = async () => {
+    const user = await handleGuestLogin();
+    if (user) {
+      router.push("/");
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
       {/* Page content — vertically centered */}
@@ -32,28 +45,59 @@ const AuthPage = () => {
 
           {/* Action buttons */}
           <div className="flex flex-col gap-3">
+            {/* Error display if any */}
+            {error && (
+              <div className="text-center text-xs text-red-500 bg-red-500/10 py-2 px-3 rounded-lg border border-red-500/20">
+                {error}
+              </div>
+            )}
+
             {/* Primary CTA */}
             <Button
               variant="primary"
               width="full"
               className="rounded-full py-3 text-sm font-semibold"
+              onClick={onGuestLogin}
+              disabled={isLoading}
             >
-              Continue as Guest
+              {isLoading ? "Signing in..." : "Continue as Guest"}
             </Button>
 
             {/* Google OAuth — outline button using TextWrapper with image prop */}
-            <Button
-              variant="outline"
-              width="full"
-              className="rounded-full py-3 text-sm font-medium"
-            >
-              <TextWrapper
-                image="/icons/Google.svg"
-                text="Login with Google"
-                textColor="text-foreground"
-                className="w-fit gap-2"
-              />
-            </Button>
+            <div className="relative">
+              <Button
+                variant="outline"
+                width="full"
+                className="rounded-full py-3 text-sm font-medium"
+                disabled={isLoading}
+              >
+                <TextWrapper
+                  image="/icons/Google.svg"
+                  text="Login with Google"
+                  textColor="text-foreground"
+                  className="w-fit gap-2"
+                />
+              </Button>
+              {!isLoading && (
+                <div className="absolute inset-0 opacity-0 overflow-hidden cursor-pointer [&>div]:w-full [&>div]:h-full [&_iframe]:w-full [&_iframe]:h-full [&_iframe]:min-w-full">
+                  <GoogleLogin
+                    onSuccess={(credentialResponse) => {
+                      if (credentialResponse.credential) {
+                        handleGoogleLogin(credentialResponse.credential).then((user) => {
+                          if (user) {
+                            router.push("/");
+                          }
+                        });
+                      }
+                    }}
+                    onError={() => {
+                      console.error("Google Login Failed");
+                    }}
+                    useOneTap
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
