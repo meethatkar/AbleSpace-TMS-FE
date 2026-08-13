@@ -10,18 +10,19 @@ import { GoogleIcon, PyramidIcon } from "@/components/ui/Icons";
 const AuthPage = () => {
   const router = useRouter();
   const { handleGuestLogin, handleGoogleLogin, isLoading, error } = useAuth();
-  const [token, settoken] = useState<string | null>(null);
+  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const setData = (id: string) => {
-      settoken(id);
-    };
     if (token) {
-      setData(token);
-      router.push("/");
+      router.replace("/");
+    } else {
+      const timer = setTimeout(() => {
+        setIsChecking(false);
+      }, 0);
+      return () => clearTimeout(timer);
     }
-  });
+  }, [router]);
 
   const onGuestLogin = async () => {
     const user = await handleGuestLogin();
@@ -29,6 +30,14 @@ const AuthPage = () => {
       router.push("/");
     }
   };
+
+  if (isChecking) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
