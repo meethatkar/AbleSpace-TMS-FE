@@ -3,8 +3,6 @@ import "./globals.css";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { StoreProvider } from "@/providers/StoreProvider";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import Sidebar from "@/components/Sidebar";
-import Header from "@/components/Header";
 
 export const metadata: Metadata = {
   title: "AbleSpace Task Manager",
@@ -17,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`h-full antialiased`} suppressHydrationWarning>
+    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <body className="min-h-full flex flex-col">
         <GoogleOAuthProvider clientId={process.env.GOOGLE_CLIENT_ID as string}>
           <ThemeProvider
@@ -26,15 +24,7 @@ export default function RootLayout({
             enableSystem={false}
             disableTransitionOnChange
           >
-            <StoreProvider>
-              <div className="flex flex-1 flex-row">
-                <Sidebar />
-                <div className="flex flex-col flex-1 min-h-screen overflow-hidden">
-                  <Header />
-                  <main className="flex-1 overflow-y-auto">{children}</main>
-                </div>
-              </div>
-            </StoreProvider>
+            <StoreProvider>{children}</StoreProvider>
           </ThemeProvider>
         </GoogleOAuthProvider>
       </body>
