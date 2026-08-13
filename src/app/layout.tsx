@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+<<<<<<< Updated upstream
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 const geistSans = Geist({
@@ -12,6 +13,13 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+=======
+import { ThemeProvider } from "@/providers/ThemeProvider";
+import { StoreProvider } from "@/providers/StoreProvider";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import Sidebar from "@/components/Sidebar";
+import Header from "@/components/Header";
+>>>>>>> Stashed changes
 
 export const metadata: Metadata = {
   title: "AbleSpace Task Manager",
@@ -30,6 +38,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
+<<<<<<< Updated upstream
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -38,6 +47,28 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
+=======
+        <GoogleOAuthProvider clientId={process.env.GOOGLE_CLIENT_ID as string}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem={false}
+            disableTransitionOnChange
+          >
+            <StoreProvider>
+              <div className="flex flex-1 flex-row">
+                <Sidebar />
+                <div className="flex flex-col flex-1 min-h-screen overflow-hidden">
+                  <Header />
+                  <main className="flex-1 overflow-y-auto">
+                    {children}
+                  </main>
+                </div>
+              </div>
+            </StoreProvider>
+          </ThemeProvider>
+        </GoogleOAuthProvider>
+>>>>>>> Stashed changes
       </body>
     </html>
   );
