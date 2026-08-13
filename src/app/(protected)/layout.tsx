@@ -3,7 +3,7 @@ import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { AuthGuard } from "@/components/AuthGuard";
 
-export default function DashboardLayout({
+export default function ProtectedLayout({
   children,
 }: {
   children: React.ReactNode;

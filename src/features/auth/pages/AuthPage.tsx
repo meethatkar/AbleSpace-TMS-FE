@@ -1,14 +1,27 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { TextWrapper } from "@/components/ui/TextWrapper";
 import { useAuth } from "../hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { GoogleLogin } from "@react-oauth/google";
+import { GoogleIcon, PyramidIcon } from "@/components/ui/Icons";
 
 const AuthPage = () => {
   const router = useRouter();
   const { handleGuestLogin, handleGoogleLogin, isLoading, error } = useAuth();
+  const [token, settoken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const setData = (id: string) => {
+      settoken(id);
+    };
+    if (token) {
+      setData(token);
+      router.push("/");
+    }
+  });
 
   const onGuestLogin = async () => {
     const user = await handleGuestLogin();
@@ -24,7 +37,7 @@ const AuthPage = () => {
         {/* Brand header */}
         <div className="mb-8">
           <TextWrapper
-            image="/icons/Pyramid.svg"
+            icon={<PyramidIcon />}
             text="Pyramid"
             textColor="text-foreground"
             className="w-fit gap-2"
@@ -56,7 +69,7 @@ const AuthPage = () => {
             <Button
               variant="primary"
               width="full"
-              className="rounded-full py-3 text-sm font-semibold"
+              className="rounded-full py-3 text-sm font-semibold hover:cursor-pointer"
               onClick={onGuestLogin}
               disabled={isLoading}
             >
@@ -72,7 +85,7 @@ const AuthPage = () => {
                 disabled={isLoading}
               >
                 <TextWrapper
-                  image="/icons/Google.svg"
+                  icon={<GoogleIcon />}
                   text="Login with Google"
                   textColor="text-foreground"
                   className="w-fit gap-2"
@@ -83,11 +96,13 @@ const AuthPage = () => {
                   <GoogleLogin
                     onSuccess={(credentialResponse) => {
                       if (credentialResponse.credential) {
-                        handleGoogleLogin(credentialResponse.credential).then((user) => {
-                          if (user) {
-                            router.push("/");
-                          }
-                        });
+                        handleGoogleLogin(credentialResponse.credential).then(
+                          (user) => {
+                            if (user) {
+                              router.push("/");
+                            }
+                          },
+                        );
                       }
                     }}
                     onError={() => {

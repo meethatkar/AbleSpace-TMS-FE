@@ -1,4 +1,4 @@
-import AuthPage from "@/features/auth/pages/AuthPage.jsx";
+import AuthPage from "@/features/auth/pages/AuthPage";
 import React from "react";
 
 const page = () => {
