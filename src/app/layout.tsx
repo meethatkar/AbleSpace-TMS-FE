@@ -19,7 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`h-full antialiased`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col">
-        <GoogleOAuthProvider clientId={process.env.GOOGLE_CLIENT_ID as string}>
+        <GoogleOAuthProvider
+          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string}
+        >
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
