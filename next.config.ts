@@ -6,7 +6,10 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "ik.imagekit.io",
+<<<<<<< Updated upstream
         pathname: "/**",
+=======
+>>>>>>> Stashed changes
       },
     ],
   },

@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/providers/ThemeProvider";
+import { StoreProvider } from "@/providers/StoreProvider";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import Sidebar from "@/components/Sidebar";
+import Header from "@/components/Header";
 
 export const metadata: Metadata = {
   title: "AbleSpace Task Manager",
@@ -23,7 +26,15 @@ export default function RootLayout({
             enableSystem={false}
             disableTransitionOnChange
           >
-            {children}
+            <StoreProvider>
+              <div className="flex flex-1 flex-row">
+                <Sidebar />
+                <div className="flex flex-col flex-1 min-h-screen overflow-hidden">
+                  <Header />
+                  <main className="flex-1 overflow-y-auto">{children}</main>
+                </div>
+              </div>
+            </StoreProvider>
           </ThemeProvider>
         </GoogleOAuthProvider>
       </body>
