@@ -1,11 +1,11 @@
+import TaskPage from "@/features/task/pages/TaskPage";
 import ProtectedLayout from "./(protected)/layout";
 
 export default function Home() {
   return (
     <ProtectedLayout>
-      {/* To show tasks component */}
-      <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-background h-full">
-        TASK
+      <div className="flex flex-col flex-1 items-stretch justify-start font-sans bg-background dark:bg-foreground w-full h-full">
+        <TaskPage />
       </div>
     </ProtectedLayout>
   );
