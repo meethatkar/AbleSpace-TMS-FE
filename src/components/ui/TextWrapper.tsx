@@ -13,7 +13,6 @@ export interface TextWrapperProps extends HTMLAttributes<HTMLDivElement> {
   leading?: React.ReactNode; // Fallback for custom blocks (like color squares)
   text?: string | React.ReactNode;
   trailing?: React.ReactNode;
-  textColor?: string;
 }
 
 export const TextWrapper = forwardRef<HTMLDivElement, TextWrapperProps>(
@@ -26,7 +25,6 @@ export const TextWrapper = forwardRef<HTMLDivElement, TextWrapperProps>(
       trailing,
       children,
       className = "w-fit",
-      textColor = "text-neutral-700 dark:text-neutral-200",
       ...props
     },
     ref,
@@ -34,11 +32,7 @@ export const TextWrapper = forwardRef<HTMLDivElement, TextWrapperProps>(
     return (
       <div
         ref={ref}
-        className={cn(
-          "flex flex-wrap items-center gap-2.5",
-          textColor,
-          className,
-        )}
+        className={cn("flex flex-wrap items-center gap-2.5", className)}
         {...props}
       >
         {/* Leading Element Priority: Image -> Icon -> Custom Leading */}
@@ -50,7 +44,7 @@ export const TextWrapper = forwardRef<HTMLDivElement, TextWrapperProps>(
                 height={200}
                 width={200}
                 alt={typeof text === "string" ? text : "Avatar"}
-                className="h-6 w-6 object-contain rounded-md shrink-0"
+                className="h-7 w-7 object-cover rounded-full shrink-0"
               />
             ) : icon ? (
               icon
@@ -61,7 +55,11 @@ export const TextWrapper = forwardRef<HTMLDivElement, TextWrapperProps>(
         )}
 
         {/* Main Text content */}
-        {text && <span className="truncate text-sm font-medium">{text}</span>}
+        {text && (
+          <span className="truncate text-sm font-medium text-foreground">
+            {text}
+          </span>
+        )}
 
         {/* Fallback for standard children if the 'text' prop isn't used */}
         {children}

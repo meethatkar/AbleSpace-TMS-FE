@@ -15,6 +15,7 @@ export const UserModel = types.model("User", {
 export const AuthStore = types
   .model("AuthStore", {
     user: types.maybeNull(UserModel),
+    token: types.maybeNull(types.string),
     isLoading: types.optional(types.boolean, false),
     error: types.maybeNull(types.string),
   })
@@ -28,25 +29,29 @@ export const AuthStore = types
     setUser(user: User | null) {
       self.user = user ? (user as User) : null;
     },
+    setToken(token: string | null) {
+      self.token = token;
+      if (typeof window !== "undefined") {
+        if (token) {
+          localStorage.setItem("token", token);
+        } else {
+          localStorage.removeItem("token");
+        }
+      }
+    },
     logout() {
       self.user = null;
       self.error = null;
+      self.token = null;
       if (typeof window !== "undefined") {
         localStorage.removeItem("token");
-        localStorage.removeItem("user");
       }
     },
     initialize() {
       if (typeof window !== "undefined") {
-        const storedUser = localStorage.getItem("user");
         const storedToken = localStorage.getItem("token");
-        if (storedUser && storedToken) {
-          try {
-            self.user = JSON.parse(storedUser);
-          } catch (e) {
-            localStorage.removeItem("user");
-            localStorage.removeItem("token");
-          }
+        if (storedToken) {
+          self.token = storedToken;
         }
       }
     },

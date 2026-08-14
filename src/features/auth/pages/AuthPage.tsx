@@ -48,7 +48,6 @@ const AuthPage = () => {
           <TextWrapper
             icon={<PyramidIcon />}
             text="Pyramid"
-            textColor="text-foreground"
             className="w-fit gap-2"
           />
         </div>
@@ -96,7 +95,6 @@ const AuthPage = () => {
                 <TextWrapper
                   icon={<GoogleIcon />}
                   text="Login with Google"
-                  textColor="text-foreground"
                   className="w-fit gap-2"
                 />
               </Button>

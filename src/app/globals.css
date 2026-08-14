@@ -24,6 +24,8 @@
   --base-border: #1e293b;
   --muted-foreground: #737373;
   --subtle-text: #a3a3a3;
+  --badge-bg: rgba(220, 38, 38, 0.2);
+  --badge-text: #ef4444;
 }
 
 /* Color Mode Accents */

@@ -10,11 +10,11 @@ export default function ProtectedLayout({
 }) {
   return (
     <AuthGuard>
-      <div className="flex flex-1 flex-row">
+      <div className="flex flex-row h-screen w-screen overflow-hidden">
         <Sidebar />
-        <div className="flex flex-col flex-1 min-h-screen overflow-hidden">
+        <div className="flex flex-col flex-1 h-full overflow-hidden">
           <Header />
-          <main className="flex-1 overflow-y-auto">{children}</main>
+          <main className="flex-1 flex flex-col">{children}</main>
         </div>
       </div>
     </AuthGuard>

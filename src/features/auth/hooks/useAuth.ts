@@ -18,10 +18,7 @@ export const useAuth = () => {
       const response = await AuthApi.guestLogin();
       const { access_token, user } = response.data;
 
-      if (typeof window !== "undefined") {
-        localStorage.setItem("token", access_token);
-      }
-
+      authStore.setToken(access_token);
       authStore.setUser(user);
       return user;
     } catch (err: any) {
@@ -44,10 +41,7 @@ export const useAuth = () => {
       const response = await AuthApi.googleLogin(idToken);
       const { access_token, user } = response.data;
 
-      if (typeof window !== "undefined") {
-        localStorage.setItem("token", access_token);
-      }
-
+      authStore.setToken(access_token);
       authStore.setUser(user);
       return user;
     } catch (err: any) {
