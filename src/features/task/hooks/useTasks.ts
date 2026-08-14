@@ -26,6 +26,7 @@ export const useTasks = () => {
       return normalizeString(status) === normalizeString(columnId);
     });
   };
+
   // API TO GET ALL TASKS
   const getAllTasks = async () => {
     taskStore.setLoading(true);

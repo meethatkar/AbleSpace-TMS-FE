@@ -13,6 +13,12 @@
   --badge-bg: #dc26261a;
   --badge-text: #dc2626;
   --sidebar-accent: #f5f5f5;
+  --base-chart-1: #EA580C;
+  --base-primary: #171717;
+  --tailwind-colors-red-500: #EF4444;
+  --tailwind-colors-orange-500: #F97316;
+  --tailwind-colors-yellow-500: #EAB308;
+  --tailwind-colors-gray-400: #9CA3AF;
 }
 
 .dark {
@@ -59,6 +65,12 @@
   --color-subtle-text: var(--subtle-text);
   --color-badge-bg: var(--badge-bg);
   --color-badge-text: var(--badge-text);
+  --color-base-chart-1: var(--base-chart-1);
+  --color-base-primary: var(--base-primary);
+  --color-red-500: var(--tailwind-colors-red-500);
+  --color-orange-500: var(--tailwind-colors-orange-500);
+  --color-yellow-500: var(--tailwind-colors-yellow-500);
+  --color-gray-400: var(--tailwind-colors-gray-400);
   --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --font-sans: var(--font-geist-sans);
 }

@@ -9,7 +9,7 @@ const Header = observer(() => {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <header className="flex h-14 items-center justify-between border-b border-foreground/10 bg-background px-4 transition-colors duration-300">
+    <header className="flex h-14 items-center justify-between border-b border-foreground/10 bg-background px-4 transition-colors duration-300 py-4">
       <div className="flex items-center gap-3">
         {/* Toggle Sidebar Button */}
         <button

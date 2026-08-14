@@ -2,7 +2,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { GripVertical, Plus, MoreHorizontal } from "lucide-react";
-import { Button } from "./ui/Button";
+import { Button } from "../ui/Button";
 
 interface KanbanColumnProps {
   id: string;
