@@ -19,12 +19,12 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
       "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium whitespace-nowrap transition-colors";
 
     const variants = {
-      // Standard gray tag (Design, Development, etc.)
+      // Standard gray tag (Design, Development, etc.) using theme variables
       default:
-        "bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300",
+        "bg-sidebar-accent text-foreground dark:bg-sidebar-accent dark:text-subtle-text",
 
-      // Date-specific tag using your established CSS variables for the red tint
-      date: "bg-[var(--badge-bg)] text-[var(--badge-text)] ",
+      // Date-specific tag using theme variables
+      date: "bg-badge-bg text-badge-text dark:bg-badge-bg dark:text-badge-text",
     };
 
     return (
