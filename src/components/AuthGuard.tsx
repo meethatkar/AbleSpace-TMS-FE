@@ -14,8 +14,6 @@ export const AuthGuard = observer(
     useEffect(() => {
       const token =
         typeof window !== "undefined" ? localStorage.getItem("token") : null;
-      console.log("NO TOEN");
-
       if (!token) {
         router.replace("/auth");
       } else {

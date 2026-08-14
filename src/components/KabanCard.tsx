@@ -4,28 +4,16 @@ import { MoreHorizontal, Calendar, Tag } from "lucide-react";
 import { TextWrapper } from "./ui/TextWrapper";
 import { Badge } from "./ui/Badge";
 import { Button } from "./ui/Button";
+import { formatDate } from "@/utils/DateFormatter";
+import { TaskCardData } from "@/types/TaskCard.type";
 
-export interface TaskCardData {
-  id: string;
-  title: string;
-  assignee: {
-    name: string;
-    image?: string;
-  };
-  dueDate: string;
-  tags: Array<{
-    id: string;
-    text: string;
-  }>;
-}
-
-interface TaskCardProps {
+interface KabanCardProps {
   task: TaskCardData;
   onMenuClick?: () => void;
   onClick?: () => void;
 }
 
-export const TaskCard: React.FC<TaskCardProps> = ({
+export const KabanCard: React.FC<KabanCardProps> = ({
   task,
   onMenuClick,
   onClick,
@@ -38,7 +26,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       {/* Row 1: Title & Options Menu */}
       <div className="flex items-start justify-between gap-2">
         <h4 className="text-sm font-medium text-foreground tracking-tight leading-snug line-clamp-2 mb-1.5">
-          {task.title}
+          {task.name}
         </h4>
         <Button
           variant="ghost"
@@ -53,35 +41,42 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         </Button>
       </div>
 
-      {/* Row 2: Assignee & Date Badge */}
-      <div className="flex items-center justify-between gap-2">
-        {/* Assignee using TextWrapper */}
-        <div className="flex items-center">
-          <TextWrapper
-            image={task.assignee.image}
-            text={task.assignee.name}
-            // Overriding padding/background to fit compact card layout cleanly
-            className="!p-0 !bg-transparent hover:!bg-transparent text-xs text-subtle-text font-medium"
-          />
+      {/* Row 2: Reporter, Assignees & Date Badge */}
+      <div className="flex items-end justify-between gap-2">
+        <div className="flex flex-col gap-1.5">
+          {/* Reporter details */}
+          <div className="flex items-center gap-1.5">
+            <TextWrapper
+              image={task.reporter.profileImg ?? undefined}
+              text={
+                task.reporter
+                  ? task.reporter.fullName || task.reporter.username
+                  : "Unassigned"
+              }
+              className="!p-0 !bg-transparent hover:!bg-transparent text-xs text-foreground font-medium"
+            />
+          </div>
         </div>
 
         {/* Date using Badge component */}
-        <Badge
-          variant="date"
-          icon={<Calendar size={12} />}
-          text={task.dueDate}
-        />
+        {task.dueDate && (
+          <Badge
+            variant="date"
+            icon={<Calendar size={12} />}
+            text={formatDate(task.dueDate)}
+          />
+        )}
       </div>
 
       {/* Row 3: Tags / Badges with automatic flex-wrap overflow handling */}
-      {task.tags && task.tags.length > 0 && (
+      {task.labels && task.labels.length > 0 && (
         <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-          {task.tags.map((tag) => (
+          {task.labels.map((label, index) => (
             <Badge
-              key={tag.id}
+              key={index}
               variant="default"
               icon={<Tag size={12} />}
-              text={tag.text}
+              text={label}
             />
           ))}
         </div>

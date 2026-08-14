@@ -1,18 +1,21 @@
+import { User } from "./User.type";
+
 export interface TaskCardData {
-  id: string;
-  title: string;
-  assignee: {
-    name: string;
-    image?: string;
-  };
-  dueDate: string;
-  tags: Array<{
-    id: string;
-    text: string;
-  }>;
+  _id: string;
+  name: string;
+  description?: string;
+  status: string;
+  reporter: User;
+  members?: User[];
+  teams?: string;
+  dueDate?: string;
+  priority?: string;
+  labels?: string[];
+  updates?: string;
+  updatedBy?: User;
 }
 
-interface TaskCardProps {
+export interface TaskCardProps {
   task: TaskCardData;
   onMenuClick?: () => void;
   onClick?: () => void;

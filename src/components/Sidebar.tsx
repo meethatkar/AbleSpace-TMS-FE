@@ -28,7 +28,6 @@ export default observer(function Sidebar() {
             <TextWrapper
               image="https://ik.imagekit.io/a4ft9seaz/task-management-system/TMS-profile.jpg?updatedAt=1786451424961"
               text="Dexter"
-              textColor="text-foreground"
               trailing={
                 <ChevronsUpDown
                   size={16}
@@ -67,7 +66,6 @@ export default observer(function Sidebar() {
                     />
                   }
                   text={label}
-                  textColor={isActive ? "text-primary" : "text-foreground/80 "}
                   onClick={() => setActiveTab(id)}
                   className={`w-full flex items-center justify-start px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 group gap-3 overflow-hidden ${
                     isActive

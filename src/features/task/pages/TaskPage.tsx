@@ -1,64 +1,35 @@
-import { TaskCard } from "@/components/KabanCard";
+"use client";
 import { KanbanColumn } from "@/components/KabanWrapper";
 import { ViewHeader } from "@/components/ViewHeader";
-import { TaskCardData } from "@/types/TaskCard.type";
-import React from "react";
+import React, { useEffect } from "react";
+import { observer } from "mobx-react-lite";
+import { useTasks } from "../hooks/useTasks";
+import { KabanCard } from "@/components/KabanCard";
 
-const TaskPage = () => {
-  const sampleTask: TaskCardData = {
-    id: "1",
-    title: "Write API Documentation",
-    assignee: {
-      name: "Admin",
-      image:
-        "https://ik.imagekit.io/a4ft9seaz/task-management-system/TMS-profile.jpg?updatedAt=1786451424961",
-    },
-    dueDate: "29 Jul",
-    tags: [
-      { id: "t1", text: "Deployment" },
-      { id: "t2", text: "Deployment" },
-    ],
-  };
+const TaskPage = observer(() => {
+  const { getAllTasks, columns, getTasksByColumn } = useTasks();
+
+  useEffect(() => {
+    getAllTasks();
+  }, []);
 
   return (
     <div className="px-6 bg-background h-full flex flex-col overflow-hidden">
       <ViewHeader title="task" />
       <div className="flex gap-5 overflow-x-auto pb-6 items-start flex-1 min-h-0">
-        <KanbanColumn id="to-do" title="to-do">
-          <TaskCard task={sampleTask} />
-          <TaskCard task={sampleTask} />
-          <TaskCard task={sampleTask} />
-        </KanbanColumn>
-        <KanbanColumn id="to-do" title="to-do">
-          <TaskCard task={sampleTask} />
-        </KanbanColumn>
-        <KanbanColumn id="to-do" title="to-do">
-          <TaskCard task={sampleTask} />
-          <TaskCard task={sampleTask} />
-          <TaskCard task={sampleTask} />
-        </KanbanColumn>
-        <KanbanColumn id="to-do" title="to-do">
-          <TaskCard task={sampleTask} />
-        </KanbanColumn>
-        <KanbanColumn id="to-do" title="to-do">
-          <TaskCard task={sampleTask} />
-          <TaskCard task={sampleTask} />
-          <TaskCard task={sampleTask} />
-        </KanbanColumn>
-        <KanbanColumn id="to-do" title="to-do">
-          <TaskCard task={sampleTask} />
-        </KanbanColumn>
-        <KanbanColumn id="to-do" title="to-do">
-          <TaskCard task={sampleTask} />
-          <TaskCard task={sampleTask} />
-          <TaskCard task={sampleTask} />
-        </KanbanColumn>
-        <KanbanColumn id="to-do" title="to-do">
-          <TaskCard task={sampleTask} />
-        </KanbanColumn>
+        {columns.map((col) => {
+          const colTasks = getTasksByColumn(col.id);
+          return (
+            <KanbanColumn key={col.id} id={col.id} title={col.title}>
+              {colTasks.map((task) => (
+                <KabanCard key={task._id} task={task} />
+              ))}
+            </KanbanColumn>
+          );
+        })}
       </div>
     </div>
   );
-};
+});
 
 export default TaskPage;

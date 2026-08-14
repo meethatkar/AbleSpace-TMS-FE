@@ -44,7 +44,7 @@ export const TextWrapper = forwardRef<HTMLDivElement, TextWrapperProps>(
                 height={200}
                 width={200}
                 alt={typeof text === "string" ? text : "Avatar"}
-                className="h-6 w-6 object-cover rounded-full shrink-0"
+                className="h-7 w-7 object-cover rounded-full shrink-0"
               />
             ) : icon ? (
               icon
