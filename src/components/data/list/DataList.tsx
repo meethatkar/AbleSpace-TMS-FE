@@ -35,7 +35,7 @@ export const DataList: React.FC<DataListProps> = ({
   return (
     <div className="list-wrapper flex flex-col gap-4 w-full">
       {categories.map((category) => {
-        const categoryTasks = getTasksByColumn(category.id);
+        const categoryTasks = getTasksByColumn(tasks, category.id);
         const isCollapsed = collapsed[category.id];
 
         return (

@@ -5,11 +5,27 @@ export const ViewStore = types
     viewMode: types.optional(types.enumeration(["list", "board"]), "board"),
     // Store the selected column IDs
     selectedFields: types.array(types.string),
+    // Using a map of arrays for filters (e.g. { "priority": ["urgent", "high"] })
+    selectedFilters: types.map(types.array(types.string)),
     isLoading: types.optional(types.boolean, false),
   })
   .actions((self) => ({
     setViewMode(mode: "list" | "board") {
       self.viewMode = mode;
+    },
+
+    toggleFilter(categoryId: string, optionId: string) {
+      let currentSelected = self.selectedFilters.get(categoryId);
+      if (!currentSelected) {
+        self.selectedFilters.set(categoryId, []);
+        currentSelected = self.selectedFilters.get(categoryId);
+      }
+      
+      if (currentSelected!.includes(optionId)) {
+        currentSelected!.remove(optionId);
+      } else {
+        currentSelected!.push(optionId);
+      }
     },
 
     // The action called when a user clicks a row in the menu

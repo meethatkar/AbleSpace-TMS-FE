@@ -16,12 +16,11 @@ export const useTasks = () => {
   
   // LOGIC TO FILTER TASKS AS PER IT'S STATUS
   const columns = TASK_CATEGORIES;
-  const getTasksByColumn = (columnId: string) => {
-    const taskList = taskStore.tasks ? toJS(taskStore.tasks) : [];
-    return taskList.filter((task) => {
+  const getTasksByColumn = (tasksArray: TaskCardData[], columnId: string) => {
+    return tasksArray.filter((task) => {
       const status = task.status || "";
       return normalizeString(status) === normalizeString(columnId);
-    }) as TaskCardData[];
+    });
   };
 
   // API TO GET ALL TASKS

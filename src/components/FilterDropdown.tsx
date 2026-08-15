@@ -35,9 +35,11 @@ export interface FilterCategory {
 
 // Hardcoded Static Data
 const STATUS_OPTIONS: FilterOption[] = [
-  { id: "to-do", label: "To Do", color: "#6b7280" },
-  { id: "in-progress", label: "In Progress", color: "#3b82f6" },
+  { id: "todo", label: "To Do", color: "#6b7280" },
+  { id: "doing", label: "Doing", color: "#3b82f6" },
   { id: "completed", label: "Completed", color: "#10b981" },
+  { id: "on-hold", label: "On Hold", color: "#f59e0b" },
+  { id: "backlog", label: "Backlog", color: "#9ca3af" },
 ];
 
 const PRIORITY_OPTIONS: FilterOption[] = [
