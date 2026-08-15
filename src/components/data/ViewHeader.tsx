@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { Columns3, ListFilter, Plus, SlidersHorizontal } from "lucide-react";
 import { SearchBar } from "../ui/Searchbar";
 import { Button } from "../ui/Button";
@@ -9,6 +9,9 @@ interface ViewHeaderProps {
   searchQuery?: string;
   onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onFieldsClick?: () => void;
+  isFieldsOpen?: boolean;
+  fieldsMenu?: React.ReactNode;
+  onCloseFieldsMenu?: () => void;
   onFilterClick?: () => void;
   onAddClick?: () => void;
   onMenuClick?: () => void; // Callback for mobile menu logo button
@@ -20,6 +23,9 @@ export const ViewHeader: React.FC<ViewHeaderProps> = ({
   searchQuery,
   onSearchChange,
   onFieldsClick,
+  isFieldsOpen,
+  fieldsMenu,
+  onCloseFieldsMenu,
   onFilterClick,
   onAddClick,
   onMenuClick,
@@ -27,6 +33,22 @@ export const ViewHeader: React.FC<ViewHeaderProps> = ({
 }) => {
   // Automatically determine singular label for the add action (e.g., Tasks -> Add Task)
   const singularTitle = title.endsWith("s") ? title.slice(0, -1) : title;
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        if (isFieldsOpen && onCloseFieldsMenu) {
+          onCloseFieldsMenu();
+        }
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isFieldsOpen, onCloseFieldsMenu]);
 
   return (
     <div className="flex items-center justify-between py-4 w-full">
@@ -44,11 +66,20 @@ export const ViewHeader: React.FC<ViewHeaderProps> = ({
         />
 
         {/* Desktop view: show separate Fields and Filter buttons */}
-        <div className="hidden md:flex items-center gap-2">
-          <Button variant="outline" onClick={onFieldsClick}>
-            <Columns3 size={16} />
-            Fields
-          </Button>
+        <div className="hidden md:flex items-center gap-2 relative">
+          <div className="relative" ref={menuRef}>
+            <Button variant="outline" onClick={onFieldsClick}>
+              <Columns3 size={16} />
+              Fields
+            </Button>
+
+            {/* Fields Menu Dropdown */}
+            {isFieldsOpen && fieldsMenu && (
+              <div className="absolute top-full mt-2 -left-25 z-50">
+                {fieldsMenu}
+              </div>
+            )}
+          </div>
 
           <Button
             variant="outline"

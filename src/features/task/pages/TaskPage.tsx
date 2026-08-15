@@ -2,17 +2,22 @@
 import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { useTasks } from "../hooks/useTasks";
-import { KanbanColumn } from "@/components/data/KabanWrapper";
-import { ViewHeader } from "@/components/data/ViewHeader";
-import { KabanCard } from "@/components/data/KabanCard";
-import DataList from "@/components/data/DataList";
 import { TaskCardData } from "@/types/TaskCard.type";
-
 import { TASK_CATEGORIES } from "@/config/task.config";
+import { Calendar } from "@/components/Calendar";
+import { ViewMenuContainer } from "@/components/ViewMenuContainer";
+import { ViewHeader } from "@/components/data/ViewHeader";
+import { useStore } from "@/stores/root.store";
+import DataList from "@/components/data/list/DataList";
+import { KanbanColumn } from "@/components/data/kanban/KabanWrapper";
+import { KabanCard } from "@/components/data/kanban/KabanCard";
 
 const TaskPage = observer(() => {
   const { tasks = [], getAllTasks, createTask, getTasksByColumn } = useTasks();
-  const [viewMode, setViewMode] = useState<"list" | "kanban">("list");
+  const { viewStore } = useStore();
+  const viewMode = viewStore.viewMode;
+  
+  const [isFieldsOpen, setIsFieldsOpen] = useState(false);
 
   useEffect(() => {
     getAllTasks();
@@ -44,15 +49,18 @@ const TaskPage = observer(() => {
 
   return (
     <div className="px-6 bg-background h-full flex flex-col overflow-hidden font-sans">
-      <ViewHeader title="tasks" onAddClick={() => handleAddTask("to-do")} />
-
+      <ViewHeader 
+        title="tasks" 
+        onAddClick={() => handleAddTask("to-do")} 
+        onFieldsClick={() => setIsFieldsOpen(!isFieldsOpen)}
+        isFieldsOpen={isFieldsOpen}
+        fieldsMenu={<ViewMenuContainer />}
+        onCloseFieldsMenu={() => setIsFieldsOpen(false)}
+      />
       {/* Main Content Area */}
       <div className="flex-1 overflow-y-auto pb-6">
         {viewMode === "list" ? (
-          <DataList
-            tasks={displayTasks}
-            onAddTask={handleAddTask}
-          />
+          <DataList tasks={displayTasks} onAddTask={handleAddTask} />
         ) : (
           <div className="flex gap-5 overflow-x-auto items-start h-full min-h-0 pb-4">
             {TASK_CATEGORIES.map((col) => {
