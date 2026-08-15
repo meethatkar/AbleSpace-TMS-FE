@@ -2,12 +2,11 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { TaskCardData } from "@/types/TaskCard.type";
-import { normalizeString } from "@/utils/normalizeString";
-import { Button } from "../ui/Button";
-import { CategoryTable } from "./CategoryTable";
 import { useTasks } from "@/features/task/hooks/useTasks";
 
 import { TASK_CATEGORIES } from "@/config/task.config";
+import { Button } from "@/components/ui/Button";
+import { CategoryTable } from "./CategoryTable";
 
 interface DataListProps {
   tasks: TaskCardData[];

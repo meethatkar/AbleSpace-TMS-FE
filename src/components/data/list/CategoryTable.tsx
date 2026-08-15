@@ -1,8 +1,10 @@
 import React from "react";
 import { useTable, flexRender, tableFeatures } from "@tanstack/react-table";
 import { TaskCardData } from "@/types/TaskCard.type";
-import { getCategoryTableColumns } from "./categoryTableColumns";
 import { Plus } from "lucide-react";
+import { getCategoryTableColumns } from "./categoryTableColumns";
+import { observer } from "mobx-react-lite";
+import { useStore } from "@/stores/root.store";
 
 const features = tableFeatures({});
 
@@ -12,14 +14,17 @@ export interface CategoryTableProps {
   onEditTask?: (task: TaskCardData) => void;
 }
 
-export const CategoryTable: React.FC<CategoryTableProps> = ({
+export const CategoryTable: React.FC<CategoryTableProps> = observer(({
   tasks,
   onAddTask,
   onEditTask,
 }) => {
+  const { viewStore } = useStore();
+  const selectedFields = viewStore.selectedFields.toJSON();
+
   const columns = React.useMemo(
-    () => getCategoryTableColumns({ onEditTask }),
-    [onEditTask],
+    () => getCategoryTableColumns({ onEditTask, selectedFields }),
+    [onEditTask, JSON.stringify(selectedFields)],
   );
 
   const table = useTable({
@@ -28,15 +33,20 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
     features,
   });
 
+  const visibleColumnsCount = columns.length;
+
   return (
     <div className="w-full overflow-hidden border border-base-border rounded-md bg-background  mb-6 font-sans">
       <table className="w-full border-collapse text-left text-sm text-foreground table-fixed">
         <colgroup>
-          <col style={{ width: "493px" }} />
-          <col className="w-[11%] min-w-20" />
-          <col className="w-[11%] min-w-30" />
-          <col className="w-[11%] min-w-30" />
-          <col className="w-[7%] min-w-20" />
+          {table.getHeaderGroups()[0]?.headers.map((header) => {
+            const id = header.id;
+            if (id === "name")
+              return <col key={id} style={{ width: "493px" }} />;
+            if (id === "actions")
+              return <col key={id} className="w-[7%] min-w-20" />;
+            return <col key={id} className="w-[11%] min-w-20" />;
+          })}
         </colgroup>
         <thead className="bg-sidebar-bg border-b border-base-border text-subtle-text">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -61,7 +71,7 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
           {tasks.length === 0 && (
             <tr>
               <td
-                colSpan={5}
+                colSpan={visibleColumnsCount}
                 className="px-4 py-8 text-center text-muted-foreground text-sm"
               >
                 No tasks present in this category.
@@ -84,7 +94,7 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
           {onAddTask && (
             <tr>
               <td
-                colSpan={5}
+                colSpan={visibleColumnsCount}
                 className="px-4 py-2.5 align-middle text-muted-foreground"
               >
                 <button
@@ -106,4 +116,4 @@ export const CategoryTable: React.FC<CategoryTableProps> = ({
       </table>
     </div>
   );
-};
+});

@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
 import { MoreHorizontal, Calendar, Tag } from "lucide-react";
-import { TextWrapper } from "../ui/TextWrapper";
-import { Badge } from "../ui/Badge";
-import { Button } from "../ui/Button";
 import { formatDate } from "@/utils/DateFormatter";
 import { TaskCardData } from "@/types/TaskCard.type";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
+import { TextWrapper } from "@/components/ui/TextWrapper";
 
 interface KabanCardProps {
   task: TaskCardData;
