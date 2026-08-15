@@ -4,6 +4,7 @@ import { observer } from "mobx-react-lite";
 import { useTasks } from "../hooks/useTasks";
 import { TaskCardData } from "@/types/TaskCard.type";
 import { TASK_CATEGORIES } from "@/config/task.config";
+import { normalizeString } from "@/utils/normalizeString";
 import { ViewMenuContainer } from "@/components/ViewMenuContainer";
 import { ViewHeader } from "@/components/data/ViewHeader";
 import { useStore } from "@/stores/root.store";
@@ -19,25 +20,11 @@ const TaskPage = observer(() => {
   const [isFieldsOpen, setIsFieldsOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  // --- FilterDropdown Testing State ---
-  const [selectedFilters, setSelectedFilters] = useState<
-    Record<string, string[]>
-  >({
-    priority: ["urgent"],
-  });
+  // --- Filter State & Logic ---
+  const selectedFilters = viewStore.selectedFilters.toJSON();
 
   const handleToggle = (categoryId: string, optionId: string) => {
-    setSelectedFilters((prev) => {
-      const currentSelected = prev[categoryId] || [];
-      const isAlreadySelected = currentSelected.includes(optionId);
-
-      return {
-        ...prev,
-        [categoryId]: isAlreadySelected
-          ? currentSelected.filter((id) => id !== optionId) // Remove if checked
-          : [...currentSelected, optionId], // Add if unchecked
-      };
-    });
+    viewStore.toggleFilter(categoryId, optionId);
   };
   // ----------------------------------
 
@@ -45,7 +32,38 @@ const TaskPage = observer(() => {
     getAllTasks();
   }, []);
 
-  const displayTasks = tasks;
+  const displayTasks = React.useMemo(() => {
+    return tasks.filter((task) => {
+      for (const [category, selectedIds] of Object.entries(selectedFilters)) {
+        if (!selectedIds || selectedIds.length === 0) continue;
+
+        switch (category) {
+          case "priority":
+            if (!selectedIds.includes(normalizeString(task.priority || "none"))) return false;
+            break;
+          case "status":
+            if (!selectedIds.includes(normalizeString(task.status || ""))) return false;
+            break;
+          case "dueDate":
+            if (!selectedIds.includes(task.dueDate || "")) return false;
+            break;
+          case "teams":
+            if (!selectedIds.includes(task.teams || "")) return false;
+            break;
+          case "labels":
+            if (!task.labels?.some((label) => selectedIds.includes(label))) return false;
+            break;
+          case "members":
+            if (!task.members?.some((m) => selectedIds.includes(m._id))) return false;
+            break;
+          case "reporter":
+            if (!selectedIds.includes(task.reporter?._id || "")) return false;
+            break;
+        }
+      }
+      return true;
+    });
+  }, [tasks, selectedFilters]);
 
   const handleAddTask = async (status: string) => {
     const name = prompt("Enter task name:");
@@ -97,7 +115,7 @@ const TaskPage = observer(() => {
         ) : (
           <div className="flex gap-5 overflow-x-auto items-start h-full min-h-0 pb-4">
             {TASK_CATEGORIES.map((col) => {
-              const colTasks = getTasksByColumn(col.id);
+              const colTasks = getTasksByColumn(displayTasks, col.id);
               return (
                 <KanbanColumn
                   key={col.id}

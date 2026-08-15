@@ -22,7 +22,14 @@ interface GetCategoryTableColumnsOptions {
 
 export const getCategoryTableColumns = ({
   onEditTask,
-  selectedFields = ["priority", "members", "dueDate", "status", "reporter", "labels"], // Default to all if not provided
+  selectedFields = [
+    "priority",
+    "members",
+    "dueDate",
+    "status",
+    "reporter",
+    "labels",
+  ], // Default to all if not provided
 }: GetCategoryTableColumnsOptions = {}): ColumnDef<
   TableFeatures,
   TaskCardData,
@@ -66,7 +73,7 @@ export const getCategoryTableColumns = ({
             </div>
           );
         },
-      })
+      }),
     );
   }
 
@@ -106,7 +113,7 @@ export const getCategoryTableColumns = ({
             </div>
           );
         },
-      })
+      }),
     );
   }
 
@@ -120,7 +127,7 @@ export const getCategoryTableColumns = ({
             return <span className="text-muted-foreground text-xs">—</span>;
           return <span className="text-sm">{formatDate(dueDate, "list")}</span>;
         },
-      })
+      }),
     );
   }
 
@@ -133,7 +140,7 @@ export const getCategoryTableColumns = ({
           if (!labels || labels.length === 0)
             return <span className="text-muted-foreground text-xs">—</span>;
           return (
-            <div className="flex items-center gap-1.5 overflow-hidden">
+            <div className="flex items-center gap-1.5 overflow-hidden flex-wrap">
               {labels.map((label: string, idx: number) => (
                 <span
                   key={idx}
@@ -145,7 +152,7 @@ export const getCategoryTableColumns = ({
             </div>
           );
         },
-      })
+      }),
     );
   }
 
@@ -161,7 +168,7 @@ export const getCategoryTableColumns = ({
             </span>
           );
         },
-      })
+      }),
     );
   }
 
@@ -197,7 +204,7 @@ export const getCategoryTableColumns = ({
             </div>
           );
         },
-      })
+      }),
     );
   }
 
@@ -218,7 +225,7 @@ export const getCategoryTableColumns = ({
           </div>
         );
       },
-    })
+    }),
   );
 
   return columns;
