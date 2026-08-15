@@ -11,13 +11,34 @@ import { useStore } from "@/stores/root.store";
 import DataList from "@/components/data/list/DataList";
 import { KanbanColumn } from "@/components/data/kanban/KabanWrapper";
 import { KabanCard } from "@/components/data/kanban/KabanCard";
+import { FilterDropdown } from "@/components/FilterDropdown";
 
 const TaskPage = observer(() => {
   const { tasks = [], getAllTasks, createTask, getTasksByColumn } = useTasks();
   const { viewStore } = useStore();
   const viewMode = viewStore.viewMode;
-  
   const [isFieldsOpen, setIsFieldsOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  // --- FilterDropdown Testing State ---
+  const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({
+    priority: ["urgent"],
+  });
+
+  const handleToggle = (categoryId: string, optionId: string) => {
+    setSelectedFilters((prev) => {
+      const currentSelected = prev[categoryId] || [];
+      const isAlreadySelected = currentSelected.includes(optionId);
+      
+      return {
+        ...prev,
+        [categoryId]: isAlreadySelected
+          ? currentSelected.filter((id) => id !== optionId) // Remove if checked
+          : [...currentSelected, optionId], // Add if unchecked
+      };
+    });
+  };
+  // ----------------------------------
 
   useEffect(() => {
     getAllTasks();
@@ -56,7 +77,17 @@ const TaskPage = observer(() => {
         isFieldsOpen={isFieldsOpen}
         fieldsMenu={<ViewMenuContainer />}
         onCloseFieldsMenu={() => setIsFieldsOpen(false)}
+        onFilterClick={() => setIsFilterOpen(!isFilterOpen)}
+        isFilterOpen={isFilterOpen}
+        filterMenu={
+          <FilterDropdown 
+            selectedFilters={selectedFilters} 
+            onToggleFilter={handleToggle} 
+          />
+        }
+        onCloseFilterMenu={() => setIsFilterOpen(false)}
       />
+
       {/* Main Content Area */}
       <div className="flex-1 overflow-y-auto pb-6">
         {viewMode === "list" ? (
