@@ -5,6 +5,8 @@ export const ViewStore = types
     viewMode: types.optional(types.enumeration(["list", "board"]), "board"),
     // Store the selected column IDs
     selectedFields: types.array(types.string),
+    // Search query for filtering tasks by name
+    searchQuery: types.optional(types.string, ""),
     // Using a map of arrays for filters (e.g. { "priority": ["urgent", "high"] })
     selectedFilters: types.map(types.array(types.string)),
     isLoading: types.optional(types.boolean, false),
@@ -12,6 +14,10 @@ export const ViewStore = types
   .actions((self) => ({
     setViewMode(mode: "list" | "board") {
       self.viewMode = mode;
+    },
+
+    setSearchQuery(query: string) {
+      self.searchQuery = query;
     },
 
     toggleFilter(categoryId: string, optionId: string) {
