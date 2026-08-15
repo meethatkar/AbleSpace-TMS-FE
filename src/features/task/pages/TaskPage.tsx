@@ -19,6 +19,16 @@ const TaskPage = observer(() => {
   const viewMode = viewStore.viewMode;
   const [isFieldsOpen, setIsFieldsOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  
+  // --- Search State & Debounce ---
+  const [localSearchQuery, setLocalSearchQuery] = useState(viewStore.searchQuery || "");
+  
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      viewStore.setSearchQuery(localSearchQuery);
+    }, 800);
+    return () => clearTimeout(handler);
+  }, [localSearchQuery, viewStore]);
 
   // --- Filter State & Logic ---
   const selectedFilters = viewStore.selectedFilters.toJSON();
@@ -34,6 +44,14 @@ const TaskPage = observer(() => {
 
   const displayTasks = React.useMemo(() => {
     return tasks.filter((task) => {
+      // 1. Text Search Filter (Case-insensitive task name)
+      if (viewStore.searchQuery) {
+        if (!task.name?.toLowerCase().includes(viewStore.searchQuery.toLowerCase())) {
+          return false;
+        }
+      }
+
+      // 2. Multi-Select Category Filters
       for (const [category, selectedIds] of Object.entries(selectedFilters)) {
         if (!selectedIds || selectedIds.length === 0) continue;
 
@@ -91,7 +109,9 @@ const TaskPage = observer(() => {
     <div className="px-6 bg-background h-full flex flex-col overflow-hidden font-sans">
       <ViewHeader
         title="tasks"
-        onAddClick={() => handleAddTask("to-do")}
+        searchQuery={localSearchQuery}
+        onSearchChange={(e) => setLocalSearchQuery(e.target.value)}
+        onAddClick={() => handleAddTask("todo")}
         onFieldsClick={() => setIsFieldsOpen(!isFieldsOpen)}
         isFieldsOpen={isFieldsOpen}
         fieldsMenu={<ViewMenuContainer />}
