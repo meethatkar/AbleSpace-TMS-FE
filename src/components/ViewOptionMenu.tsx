@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Check, List, LayoutGrid } from "lucide-react";
-import { cn } from "@/components/ui/Button"; // Assuming your cn utility is here
+import { Button, cn } from "@/components/ui/Button"; // Assuming your cn utility is here
 
 export interface ViewField {
   id: string;
@@ -28,30 +28,25 @@ export const ViewOptionsMenu: React.FC<ViewOptionsMenuProps> = ({
     <div className="w-74.75 rounded-xl border border-base-border bg-background p-3 shadow-lg font-sans">
       {/* Segmented Control: List vs Board */}
       <div className="mb-4 flex rounded-md border border-base-input bg-sidebar-accent">
-        <button
-          onClick={() => onViewModeChange("list")}
-          className={cn(
-            "flex flex-1 items-center justify-center gap-2 py-1.5 rounded-md text-sm font-medium transition-all",
-            viewMode === "list"
-              ? "bg-background text-foreground"
-              : "text-muted-foreground hover:text-foreground",
-          )}
-        >
-          <List size={16} />
-          List
-        </button>
-        <button
-          onClick={() => onViewModeChange("board")}
-          className={cn(
-            "flex flex-1 items-center justify-center gap-2 py-1.5 rounded-md text-sm font-medium transition-all",
-            viewMode === "board"
-              ? "bg-background text-foreground"
-              : "text-muted-foreground hover:text-foreground",
-          )}
-        >
-          <LayoutGrid size={16} />
-          Board
-        </button>
+        {[
+          { id: "list", label: "List", icon: <List size={16} /> },
+          { id: "board", label: "Board", icon: <LayoutGrid size={16} /> },
+        ].map((option) => (
+          <Button
+            key={option.id}
+            variant="ghost"
+            onClick={() => onViewModeChange(option.id as "list" | "board")}
+            className={cn(
+              "flex-1 py-1.5 px-0 h-auto rounded-md font-medium transition-all",
+              viewMode === option.id
+                ? "text-foreground hover:bg-transparent shadow-sm"
+                : "bg-background ",
+            )}
+          >
+            {option.icon}
+            {option.label}
+          </Button>
+        ))}
       </div>
 
       {/* Fields List - Only show for List view */}
