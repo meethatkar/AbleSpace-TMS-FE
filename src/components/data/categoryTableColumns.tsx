@@ -1,5 +1,5 @@
 import React from "react";
-import { createColumnHelper } from "@tanstack/react-table";
+import { createColumnHelper, ColumnDef, TableFeatures } from "@tanstack/react-table";
 import { MoreHorizontal, Plus } from "lucide-react";
 import Image from "next/image";
 import { TaskCardData } from "@/types/TaskCard.type";
@@ -8,7 +8,7 @@ import { SignalIcon } from "../icons/SignalIcon";
 import { User } from "@/types/User.type";
 import { PRIORITY_CONFIG } from "@/config/priority.config";
 
-const columnHelper = createColumnHelper<TaskCardData>();
+const columnHelper = createColumnHelper<TableFeatures, TaskCardData>();
 
 interface GetCategoryTableColumnsOptions {
   onEditTask?: (task: TaskCardData) => void;
@@ -16,7 +16,7 @@ interface GetCategoryTableColumnsOptions {
 
 export const getCategoryTableColumns = ({
   onEditTask,
-}: GetCategoryTableColumnsOptions = {}) => [
+}: GetCategoryTableColumnsOptions = {}): ColumnDef<TableFeatures, TaskCardData, any>[] => [
   // 1. Task Name
   columnHelper.accessor("name", {
     header: "Task",
