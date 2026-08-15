@@ -8,13 +8,7 @@ import { KabanCard } from "@/components/data/KabanCard";
 import DataList from "@/components/data/DataList";
 import { TaskCardData } from "@/types/TaskCard.type";
 
-const COLUMNS = [
-  { id: "backlog", title: "Backlog" },
-  { id: "to-do", title: "To Do" },
-  { id: "in-progress", title: "In Progress" },
-  { id: "on-hold", title: "On Hold" },
-  { id: "completed", title: "Completed" },
-];
+import { TASK_CATEGORIES } from "@/config/task.config";
 
 const TaskPage = observer(() => {
   const { tasks = [], getAllTasks, createTask, getTasksByColumn } = useTasks();
@@ -57,12 +51,11 @@ const TaskPage = observer(() => {
         {viewMode === "list" ? (
           <DataList
             tasks={displayTasks}
-            categories={COLUMNS}
             onAddTask={handleAddTask}
           />
         ) : (
           <div className="flex gap-5 overflow-x-auto items-start h-full min-h-0 pb-4">
-            {COLUMNS.map((col) => {
+            {TASK_CATEGORIES.map((col) => {
               const colTasks = getTasksByColumn(col.id);
               return (
                 <KanbanColumn

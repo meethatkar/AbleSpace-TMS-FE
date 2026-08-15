@@ -3,6 +3,7 @@ import { TaskCardData } from "@/types/TaskCard.type";
 import { getAllTaskApi, createTaskApi } from "../service/task.api";
 import { toJS } from "mobx";
 import { normalizeString } from "@/utils/normalizeString";
+import { TASK_CATEGORIES } from "@/config/task.config";
 
 export const useTasks = () => {
   let taskStore;
@@ -12,13 +13,9 @@ export const useTasks = () => {
   } catch (error) {
     taskStore = getRootStore().taskStore;
   }
-
+  
   // LOGIC TO FILTER TASKS AS PER IT'S STATUS
-  const columns = [
-    { id: "to-do", title: "To Do" },
-    { id: "in-progress", title: "In Progress" },
-    { id: "completed", title: "Completed" },
-  ];
+  const columns = TASK_CATEGORIES;
   const getTasksByColumn = (columnId: string) => {
     const taskList = taskStore.tasks ? toJS(taskStore.tasks) : [];
     return taskList.filter((task) => {

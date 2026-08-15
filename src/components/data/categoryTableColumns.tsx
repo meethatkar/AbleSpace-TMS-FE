@@ -1,12 +1,17 @@
 import React from "react";
-import { createColumnHelper, ColumnDef, TableFeatures } from "@tanstack/react-table";
+import {
+  createColumnHelper,
+  ColumnDef,
+  TableFeatures,
+} from "@tanstack/react-table";
 import { MoreHorizontal, Plus } from "lucide-react";
 import Image from "next/image";
 import { TaskCardData } from "@/types/TaskCard.type";
 import { formatDate } from "@/utils/DateFormatter";
 import { SignalIcon } from "../icons/SignalIcon";
 import { User } from "@/types/User.type";
-import { PRIORITY_CONFIG } from "@/config/priority.config";
+import { PRIORITY_CONFIG } from "@/config/task.config";
+import { Button } from "@/components/ui/Button";
 
 const columnHelper = createColumnHelper<TableFeatures, TaskCardData>();
 
@@ -16,7 +21,11 @@ interface GetCategoryTableColumnsOptions {
 
 export const getCategoryTableColumns = ({
   onEditTask,
-}: GetCategoryTableColumnsOptions = {}): ColumnDef<TableFeatures, TaskCardData, any>[] => [
+}: GetCategoryTableColumnsOptions = {}): ColumnDef<
+  TableFeatures,
+  TaskCardData,
+  any
+>[] => [
   // 1. Task Name
   columnHelper.accessor("name", {
     header: "Task",
@@ -61,9 +70,12 @@ export const getCategoryTableColumns = ({
       const members = info.getValue();
       if (!members || members.length === 0) {
         return (
-          <button className="w-7 h-7 rounded-full bg-sidebar-accent flex items-center justify-center text-foreground cursor-pointer">
-            <Plus size={18} />
-          </button>
+          <Button
+            variant="ghost"
+            className="w-7 h-7 rounded-full bg-sidebar-accent hover:bg-sidebar-accent/80 p-0 text-foreground"
+          >
+            <Plus size={16} />
+          </Button>
         );
       }
 
