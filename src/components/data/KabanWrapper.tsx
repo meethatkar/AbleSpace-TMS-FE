@@ -55,9 +55,15 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({
       {/* Cards Container (Relative height, expands/collapses smoothly with Framer Motion layout) */}
       <motion.div
         layout
-        className="flex flex-col gap-3 min-h-[120px] flex-1 overflow-y-auto pr-1"
+        className="flex flex-col gap-3 flex-1 overflow-y-auto pr-1"
       >
-        {children}
+        {React.Children.count(children) === 0 ? (
+          <div className="flex flex-col items-center justify-center h-[100px] text-muted-foreground border-2 border-dashed border-base-border rounded-lg m-1 bg-background/50">
+            <p className="text-sm font-medium">No tasks present.</p>
+          </div>
+        ) : (
+          children
+        )}
       </motion.div>
 
       {/* Bottom Add Action Button */}

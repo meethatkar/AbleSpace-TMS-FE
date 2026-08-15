@@ -1,6 +1,11 @@
 import { User } from "./User.type";
 
-export type TaskStatus = "backlog" | "to-do" | "in-progress" | "on-hold" | "completed";
+export type TaskStatus =
+  | "backlog"
+  | "to-do"
+  | "in-progress"
+  | "on-hold"
+  | "completed";
 export type TaskPriority = "low" | "medium" | "high" | "urgent";
 
 export interface TaskCardData {

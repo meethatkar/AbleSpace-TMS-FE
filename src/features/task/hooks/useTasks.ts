@@ -24,7 +24,7 @@ export const useTasks = () => {
     return taskList.filter((task) => {
       const status = task.status || "";
       return normalizeString(status) === normalizeString(columnId);
-    });
+    }) as TaskCardData[];
   };
 
   // API TO GET ALL TASKS
@@ -71,8 +71,8 @@ export const useTasks = () => {
   };
 
   return {
-    tasks: taskStore.tasks,
-    task: taskStore.task,
+    tasks: toJS(taskStore.tasks) as TaskCardData[],
+    task: toJS(taskStore.task) as TaskCardData,
     isLoading: taskStore.isLoading,
     error: taskStore.error,
     getAllTasks,
