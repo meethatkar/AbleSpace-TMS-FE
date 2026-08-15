@@ -13,6 +13,9 @@ interface ViewHeaderProps {
   fieldsMenu?: React.ReactNode;
   onCloseFieldsMenu?: () => void;
   onFilterClick?: () => void;
+  isFilterOpen?: boolean;
+  filterMenu?: React.ReactNode;
+  onCloseFilterMenu?: () => void;
   onAddClick?: () => void;
   onMenuClick?: () => void; // Callback for mobile menu logo button
   searchPlaceholder?: string;
@@ -27,6 +30,9 @@ export const ViewHeader: React.FC<ViewHeaderProps> = ({
   fieldsMenu,
   onCloseFieldsMenu,
   onFilterClick,
+  isFilterOpen,
+  filterMenu,
+  onCloseFilterMenu,
   onAddClick,
   onMenuClick,
   searchPlaceholder,
@@ -34,6 +40,7 @@ export const ViewHeader: React.FC<ViewHeaderProps> = ({
   // Automatically determine singular label for the add action (e.g., Tasks -> Add Task)
   const singularTitle = title.endsWith("s") ? title.slice(0, -1) : title;
   const menuRef = useRef<HTMLDivElement>(null);
+  const filterMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -42,13 +49,21 @@ export const ViewHeader: React.FC<ViewHeaderProps> = ({
           onCloseFieldsMenu();
         }
       }
+      if (
+        filterMenuRef.current &&
+        !filterMenuRef.current.contains(event.target as Node)
+      ) {
+        if (isFilterOpen && onCloseFilterMenu) {
+          onCloseFilterMenu();
+        }
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isFieldsOpen, onCloseFieldsMenu]);
+  }, [isFieldsOpen, onCloseFieldsMenu, isFilterOpen, onCloseFilterMenu]);
 
   return (
     <div className="flex items-center justify-between py-4 w-full">
@@ -81,14 +96,23 @@ export const ViewHeader: React.FC<ViewHeaderProps> = ({
             )}
           </div>
 
-          <Button
-            variant="outline"
-            className="px-2.5"
-            onClick={onFilterClick}
-            aria-label="Filter"
-          >
-            <ListFilter size={16} />
-          </Button>
+          <div className="relative" ref={filterMenuRef}>
+            <Button
+              variant="outline"
+              className="px-2.5"
+              onClick={onFilterClick}
+              aria-label="Filter"
+            >
+              <ListFilter size={16} />
+            </Button>
+
+            {/* Filter Menu Dropdown */}
+            {isFilterOpen && filterMenu && (
+              <div className="absolute top-full mt-2 -right-25 z-50">
+                {filterMenu}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Mobile view: replace middle 2 buttons with a single menu logo button */}
