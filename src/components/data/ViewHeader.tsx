@@ -1,8 +1,8 @@
 "use client";
 import React from "react";
 import { Columns3, ListFilter, Plus, SlidersHorizontal } from "lucide-react";
-import { SearchBar } from "./ui/Searchbar";
-import { Button } from "./ui/Button";
+import { SearchBar } from "../ui/Searchbar";
+import { Button } from "../ui/Button";
 
 interface ViewHeaderProps {
   title: string;
@@ -72,7 +72,11 @@ export const ViewHeader: React.FC<ViewHeaderProps> = ({
           </Button>
         </div>
 
-        <Button variant="primary" onClick={onAddClick} className="px-3 shrink-0">
+        <Button
+          variant="primary"
+          onClick={onAddClick}
+          className="px-3 shrink-0"
+        >
           <Plus size={16} />
           <span className="hidden sm:inline">Add {singularTitle}</span>
         </Button>

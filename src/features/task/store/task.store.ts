@@ -1,6 +1,7 @@
 import { TaskCardData } from "@/types/TaskCard.type";
 import { types, cast } from "mobx-state-tree";
 import { UserModel } from "@/features/auth/store/auth.store";
+import { normalizeString } from "@/utils/normalizeString";
 
 export const TaskModel = types.model("Task", {
   _id: types.identifier,
@@ -24,6 +25,15 @@ export const TaskStore = types
     isLoading: types.optional(types.boolean, false),
     error: types.maybeNull(types.string),
   })
+  // Views: Reactive, cached, read-only derived state that automatically recalculates when inputs change.
+  .views((self) => ({
+    getTasksByColumn(columnId: string) {
+      return self.tasks.filter((task) => {
+        const status = task.status || "";
+        return normalizeString(status) === normalizeString(columnId);
+      });
+    },
+  }))
   .actions((self) => ({
     setLoading(val: boolean) {
       self.isLoading = val;

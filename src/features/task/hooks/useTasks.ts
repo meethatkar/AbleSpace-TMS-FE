@@ -3,6 +3,7 @@ import { TaskCardData } from "@/types/TaskCard.type";
 import { getAllTaskApi, createTaskApi } from "../service/task.api";
 import { toJS } from "mobx";
 import { normalizeString } from "@/utils/normalizeString";
+import { TASK_CATEGORIES } from "@/config/task.config";
 
 export const useTasks = () => {
   let taskStore;
@@ -12,20 +13,17 @@ export const useTasks = () => {
   } catch (error) {
     taskStore = getRootStore().taskStore;
   }
-
+  
   // LOGIC TO FILTER TASKS AS PER IT'S STATUS
-  const columns = [
-    { id: "to-do", title: "To Do" },
-    { id: "in-progress", title: "In Progress" },
-    { id: "completed", title: "Completed" },
-  ];
+  const columns = TASK_CATEGORIES;
   const getTasksByColumn = (columnId: string) => {
     const taskList = taskStore.tasks ? toJS(taskStore.tasks) : [];
     return taskList.filter((task) => {
       const status = task.status || "";
       return normalizeString(status) === normalizeString(columnId);
-    });
+    }) as TaskCardData[];
   };
+
   // API TO GET ALL TASKS
   const getAllTasks = async () => {
     taskStore.setLoading(true);
@@ -70,8 +68,8 @@ export const useTasks = () => {
   };
 
   return {
-    tasks: taskStore.tasks,
-    task: taskStore.task,
+    tasks: toJS(taskStore.tasks) as TaskCardData[],
+    task: toJS(taskStore.task) as TaskCardData,
     isLoading: taskStore.isLoading,
     error: taskStore.error,
     getAllTasks,
