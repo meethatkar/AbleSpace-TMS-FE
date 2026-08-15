@@ -4,7 +4,6 @@ import { observer } from "mobx-react-lite";
 import { useTasks } from "../hooks/useTasks";
 import { TaskCardData } from "@/types/TaskCard.type";
 import { TASK_CATEGORIES } from "@/config/task.config";
-import { Calendar } from "@/components/Calendar";
 import { ViewMenuContainer } from "@/components/ViewMenuContainer";
 import { ViewHeader } from "@/components/data/ViewHeader";
 import { useStore } from "@/stores/root.store";
@@ -21,7 +20,9 @@ const TaskPage = observer(() => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   // --- FilterDropdown Testing State ---
-  const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({
+  const [selectedFilters, setSelectedFilters] = useState<
+    Record<string, string[]>
+  >({
     priority: ["urgent"],
   });
 
@@ -29,7 +30,7 @@ const TaskPage = observer(() => {
     setSelectedFilters((prev) => {
       const currentSelected = prev[categoryId] || [];
       const isAlreadySelected = currentSelected.includes(optionId);
-      
+
       return {
         ...prev,
         [categoryId]: isAlreadySelected
@@ -70,9 +71,9 @@ const TaskPage = observer(() => {
 
   return (
     <div className="px-6 bg-background h-full flex flex-col overflow-hidden font-sans">
-      <ViewHeader 
-        title="tasks" 
-        onAddClick={() => handleAddTask("to-do")} 
+      <ViewHeader
+        title="tasks"
+        onAddClick={() => handleAddTask("to-do")}
         onFieldsClick={() => setIsFieldsOpen(!isFieldsOpen)}
         isFieldsOpen={isFieldsOpen}
         fieldsMenu={<ViewMenuContainer />}
@@ -80,9 +81,10 @@ const TaskPage = observer(() => {
         onFilterClick={() => setIsFilterOpen(!isFilterOpen)}
         isFilterOpen={isFilterOpen}
         filterMenu={
-          <FilterDropdown 
-            selectedFilters={selectedFilters} 
-            onToggleFilter={handleToggle} 
+          <FilterDropdown
+            selectedFilters={selectedFilters}
+            onToggleFilter={handleToggle}
+            tasks={tasks}
           />
         }
         onCloseFilterMenu={() => setIsFilterOpen(false)}
