@@ -8,17 +8,18 @@
   --sidebar-bg: #fafafa;
   --primary: #171717;
   --base-border: #e5e5e5;
+  --base-input: #e5e5e5;
   --muted-foreground: #a3a3a3;
   --subtle-text: #737373;
   --badge-bg: #dc26261a;
   --badge-text: #dc2626;
   --sidebar-accent: #f5f5f5;
-  --base-chart-1: #EA580C;
+  --base-chart-1: #ea580c;
   --base-primary: #171717;
-  --tailwind-colors-red-500: #EF4444;
-  --tailwind-colors-orange-500: #F97316;
-  --tailwind-colors-yellow-500: #EAB308;
-  --tailwind-colors-gray-400: #9CA3AF;
+  --tailwind-colors-red-500: #ef4444;
+  --tailwind-colors-orange-500: #f97316;
+  --tailwind-colors-yellow-500: #eab308;
+  --tailwind-colors-gray-400: #9ca3af;
 }
 
 .dark {
@@ -28,6 +29,7 @@
   --primary: #f8fafc;
   --sidebar-accent: #1e293b;
   --base-border: #1e293b;
+  --base-input: #1e293b;
   --muted-foreground: #737373;
   --subtle-text: #a3a3a3;
   --badge-bg: rgba(220, 38, 38, 0.2);
@@ -61,6 +63,7 @@
   --color-sidebar-accent: var(--sidebar-accent);
   --color-primary: var(--primary);
   --color-base-border: var(--base-border);
+  --color-base-input: var(--base-input);
   --color-muted-foreground: var(--muted-foreground);
   --color-subtle-text: var(--subtle-text);
   --color-badge-bg: var(--badge-bg);

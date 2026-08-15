@@ -3,12 +3,14 @@ import { types, Instance } from "mobx-state-tree";
 import { AuthStore } from "@/features/auth/store/auth.store";
 import { UIStore } from "./ui.store";
 import { TaskStore } from "@/features/task/store/task.store";
+import { ViewStore } from "./view.store";
 
 // Define the Root Store model
 export const RootStoreModel = types.model("RootStore", {
   authStore: types.optional(AuthStore, {}),
   uiStore: types.optional(UIStore, {}),
   taskStore: types.optional(TaskStore, {}),
+  viewStore: types.optional(ViewStore, {}),
 });
 
 export type RootStoreInstance = Instance<typeof RootStoreModel>;
@@ -22,6 +24,9 @@ export function getRootStore(): RootStoreInstance {
       authStore: {},
       uiStore: {},
       taskStore: {},
+      viewStore: {
+        selectedFields: ["priority", "dueDate", "status", "labels", "members"],
+      },
     });
     rootStore.authStore.initialize();
     rootStore.uiStore.initialize();
