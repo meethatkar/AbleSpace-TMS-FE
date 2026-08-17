@@ -20,6 +20,14 @@
   --tailwind-colors-orange-500: #f97316;
   --tailwind-colors-yellow-500: #eab308;
   --tailwind-colors-gray-400: #9ca3af;
+  
+  /* Color Mode Variables */
+  --color-amber: #d97706;
+  --color-blue: #9333ea;
+  --color-pink: #db2777;
+  --color-rose: #e11d48;
+  --color-emerald: #059669;
+  --color-black: #171717;
 }
 
 .dark {
@@ -34,26 +42,27 @@
   --subtle-text: #a3a3a3;
   --badge-bg: rgba(220, 38, 38, 0.2);
   --badge-text: #ef4444;
+  --color-black: #ffffff;
 }
 
 /* Color Mode Accents */
 [data-color-mode="amber"] {
-  --primary: #d97706;
+  --primary: var(--color-amber);
 }
 [data-color-mode="blue"] {
-  --primary: #9333ea;
+  --primary: var(--color-blue);
 }
 [data-color-mode="pink"] {
-  --primary: #db2777;
+  --primary: var(--color-pink);
 }
 [data-color-mode="rose"] {
-  --primary: #e11d48;
+  --primary: var(--color-rose);
 }
 [data-color-mode="emerald"] {
-  --primary: #059669;
+  --primary: var(--color-emerald);
 }
 [data-color-mode="black"] {
-  --primary: #ffffff;
+  --primary: var(--color-black);
 }
 
 @theme inline {
