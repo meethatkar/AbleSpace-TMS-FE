@@ -1,8 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
 import { observer } from "mobx-react-lite";
-import { useStore } from "@/stores/root.store";
 import { useTheme } from "next-themes";
 import { useColorMode } from "@/hooks/useColorMode";
 import Image from "next/image";

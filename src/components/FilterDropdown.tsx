@@ -12,7 +12,7 @@ import {
   Check,
 } from "lucide-react";
 import { SignalIcon } from "@/components/icons/SignalIcon";
-import { PRIORITY_CONFIG } from "@/config/task.config";
+import { PRIORITY_CONFIG, STATUS_OPTIONS } from "@/config/task.config";
 import { TextWrapper } from "@/components/ui/TextWrapper";
 import { TaskCardData } from "@/types/TaskCard.type";
 import { formatDate } from "@/utils/DateFormatter";
@@ -34,13 +34,6 @@ export interface FilterCategory {
 }
 
 // Hardcoded Static Data
-const STATUS_OPTIONS: FilterOption[] = [
-  { id: "todo", label: "To Do", color: "#6b7280" },
-  { id: "doing", label: "Doing", color: "#3b82f6" },
-  { id: "completed", label: "Completed", color: "#10b981" },
-  { id: "on-hold", label: "On Hold", color: "#f59e0b" },
-  { id: "backlog", label: "Backlog", color: "#9ca3af" },
-];
 
 const PRIORITY_OPTIONS: FilterOption[] = [
   {
