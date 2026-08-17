@@ -52,7 +52,7 @@ export const SearchBar = forwardRef<HTMLInputElement, SearchBarProps>(
       <div
         onClick={handleContainerClick}
         className={cn(
-          "flex items-center px-3 py-2 bg-background dark:text-background dark:bg-foreground border border-base-border rounded-xl text-sm text-foreground cursor-pointer h-10 flex-1 md:flex-none transition-all duration-300",
+          "flex items-center px-3 py-2 bg-background border border-base-border rounded-xl text-sm text-foreground cursor-pointer h-10 flex-1 md:flex-none transition-all duration-300 focus-within:border-primary focus-within:ring-1 focus-within:ring-primary",
           isSearching
             ? "md:w-64 md:gap-2"
             : "md:w-10 md:justify-center md:px-0 md:gap-0 gap-2",

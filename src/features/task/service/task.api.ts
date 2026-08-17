@@ -6,11 +6,12 @@ export const getAllTaskApi = async () => {
 };
 
 export const createTaskApi = async (taskObj: TaskCardData) => {
-  return await api.post("/tasks", {
-    taskObj,
-  });
+  return await api.post("/tasks", taskObj);
 };
 
-export const updateTaskApi = async (taskId: string, updateData: Partial<TaskCardData>) => {
+export const updateTaskApi = async (
+  taskId: string,
+  updateData: Partial<TaskCardData>,
+) => {
   return await api.patch(`/tasks/${taskId}`, updateData);
 };

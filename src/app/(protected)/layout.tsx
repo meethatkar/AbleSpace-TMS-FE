@@ -3,6 +3,8 @@ import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import { AuthGuard } from "@/components/AuthGuard";
 
+import { AddTaskModal } from "@/features/task/components/AddTaskModal";
+
 export default function ProtectedLayout({
   children,
 }: {
@@ -17,6 +19,7 @@ export default function ProtectedLayout({
           <main className="flex-1 flex flex-col">{children}</main>
         </div>
       </div>
+      <AddTaskModal />
     </AuthGuard>
   );
 }

@@ -1,6 +1,10 @@
 import { getRootStore, useStore } from "@/stores/root.store";
 import { TaskCardData } from "@/types/TaskCard.type";
-import { getAllTaskApi, createTaskApi, updateTaskApi } from "../service/task.api";
+import {
+  getAllTaskApi,
+  createTaskApi,
+  updateTaskApi,
+} from "../service/task.api";
 import { toJS } from "mobx";
 import { normalizeString } from "@/utils/normalizeString";
 import { TASK_CATEGORIES } from "@/config/task.config";
@@ -13,7 +17,7 @@ export const useTasks = () => {
   } catch (error) {
     taskStore = getRootStore().taskStore;
   }
-  
+
   // LOGIC TO FILTER TASKS AS PER IT'S STATUS
   const columns = TASK_CATEGORIES;
   const getTasksByColumn = (tasksArray: TaskCardData[], columnId: string) => {
@@ -50,6 +54,8 @@ export const useTasks = () => {
     taskStore.setLoading(true);
     taskStore.setError(null);
     try {
+      console.log("TSK OBJ: ", taskObj);
+
       const response = await createTaskApi(taskObj);
       const newTask = response.data.task;
       taskStore.addTask(newTask);
@@ -70,7 +76,7 @@ export const useTasks = () => {
   const updateTaskStatus = async (taskId: string, newStatus: string) => {
     const previousTask = taskStore.tasks.find((t: any) => t._id === taskId);
     const previousStatus = previousTask?.status;
-    
+
     if (previousStatus === newStatus) return; // No change needed
 
     // Optimistic Update

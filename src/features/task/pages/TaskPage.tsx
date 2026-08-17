@@ -21,7 +21,7 @@ const TaskPage = observer(() => {
     getTasksByColumn,
     updateTaskStatus,
   } = useTasks();
-  const { viewStore } = useStore();
+  const { viewStore, uiStore } = useStore();
   const viewMode = viewStore.viewMode;
   const [isFieldsOpen, setIsFieldsOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -99,26 +99,8 @@ const TaskPage = observer(() => {
     });
   }, [tasks, selectedFilters]);
 
-  const handleAddTask = async (status: string) => {
-    const name = prompt("Enter task name:");
-    if (!name) return;
-    const newTask: TaskCardData = {
-      _id: `task-${Date.now()}`,
-      name,
-      status,
-      priority: "medium",
-      reporter: {
-        _id: "u3",
-        username: "sam_jones",
-        fullName: "Sam Jones",
-        email: "sam@example.com",
-        role: "developer",
-        profileImg: null,
-      },
-      members: [],
-      labels: [],
-    };
-    await createTask(newTask);
+  const handleAddTask = (status?: string) => {
+    uiStore.setAddTaskModalOpen(true);
   };
 
   return (
