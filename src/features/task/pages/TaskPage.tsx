@@ -14,15 +14,23 @@ import { KabanCard } from "@/components/data/kanban/KabanCard";
 import { FilterDropdown } from "@/components/FilterDropdown";
 
 const TaskPage = observer(() => {
-  const { tasks = [], getAllTasks, createTask, getTasksByColumn } = useTasks();
+  const {
+    tasks = [],
+    getAllTasks,
+    createTask,
+    getTasksByColumn,
+    updateTaskStatus,
+  } = useTasks();
   const { viewStore } = useStore();
   const viewMode = viewStore.viewMode;
   const [isFieldsOpen, setIsFieldsOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  
+
   // --- Search State & Debounce ---
-  const [localSearchQuery, setLocalSearchQuery] = useState(viewStore.searchQuery || "");
-  
+  const [localSearchQuery, setLocalSearchQuery] = useState(
+    viewStore.searchQuery || "",
+  );
+
   useEffect(() => {
     const handler = setTimeout(() => {
       viewStore.setSearchQuery(localSearchQuery);
@@ -46,7 +54,11 @@ const TaskPage = observer(() => {
     return tasks.filter((task) => {
       // 1. Text Search Filter (Case-insensitive task name)
       if (viewStore.searchQuery) {
-        if (!task.name?.toLowerCase().includes(viewStore.searchQuery.toLowerCase())) {
+        if (
+          !task.name
+            ?.toLowerCase()
+            .includes(viewStore.searchQuery.toLowerCase())
+        ) {
           return false;
         }
       }
@@ -57,10 +69,12 @@ const TaskPage = observer(() => {
 
         switch (category) {
           case "priority":
-            if (!selectedIds.includes(normalizeString(task.priority || "none"))) return false;
+            if (!selectedIds.includes(normalizeString(task.priority || "none")))
+              return false;
             break;
           case "status":
-            if (!selectedIds.includes(normalizeString(task.status || ""))) return false;
+            if (!selectedIds.includes(normalizeString(task.status || "")))
+              return false;
             break;
           case "dueDate":
             if (!selectedIds.includes(task.dueDate || "")) return false;
@@ -69,10 +83,12 @@ const TaskPage = observer(() => {
             if (!selectedIds.includes(task.teams || "")) return false;
             break;
           case "labels":
-            if (!task.labels?.some((label) => selectedIds.includes(label))) return false;
+            if (!task.labels?.some((label) => selectedIds.includes(label)))
+              return false;
             break;
           case "members":
-            if (!task.members?.some((m) => selectedIds.includes(m._id))) return false;
+            if (!task.members?.some((m) => selectedIds.includes(m._id)))
+              return false;
             break;
           case "reporter":
             if (!selectedIds.includes(task.reporter?._id || "")) return false;
@@ -142,6 +158,7 @@ const TaskPage = observer(() => {
                   id={col.id}
                   title={col.title}
                   onAddClick={() => handleAddTask(col.id)}
+                  onDropTask={(taskId) => updateTaskStatus(taskId, col.id)}
                 >
                   {colTasks.map((task) => (
                     <KabanCard key={task._id} task={task} />

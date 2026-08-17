@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { motion } from "framer-motion";
 import { MoreHorizontal, Calendar, Tag } from "lucide-react";
 import { formatDate } from "@/utils/DateFormatter";
 import { TaskCardData } from "@/types/TaskCard.type";
@@ -18,10 +19,19 @@ export const KabanCard: React.FC<KabanCardProps> = ({
   onMenuClick,
   onClick,
 }) => {
+  const handleDragStart = (e: React.DragEvent) => {
+    e.dataTransfer.setData("taskId", task._id);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
   return (
-    <div
+    <motion.div
+      layout
+      layoutId={task._id}
+      draggable
+      onDragStart={handleDragStart as any}
       onClick={onClick}
-      className="group bg-background border border-base-border rounded-2xl p-3.5 transition-all cursor-pointer flex flex-col gap-3 select-none font-sans"
+      className="group bg-background border border-base-border rounded-2xl p-3.5 transition-all cursor-grab active:cursor-grabbing flex flex-col gap-3 select-none font-sans"
     >
       {/* Row 1: Title & Options Menu */}
       <div className="flex items-start justify-between gap-2">
@@ -81,6 +91,6 @@ export const KabanCard: React.FC<KabanCardProps> = ({
           ))}
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };

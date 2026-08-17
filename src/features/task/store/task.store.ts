@@ -57,6 +57,12 @@ export const TaskStore = types
         self.tasks[index] = cast(updatedTask);
       }
     },
+    updateTaskStatus(taskId: string, newStatus: string) {
+      const task = self.tasks.find((t) => t._id === taskId);
+      if (task) {
+        task.status = newStatus;
+      }
+    },
     removeTask(taskId: string) {
       const index = self.tasks.findIndex((t) => t._id === taskId);
       if (index !== -1) {

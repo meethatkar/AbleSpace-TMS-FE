@@ -1,6 +1,6 @@
 import { getRootStore, useStore } from "@/stores/root.store";
 import { TaskCardData } from "@/types/TaskCard.type";
-import { getAllTaskApi, createTaskApi } from "../service/task.api";
+import { getAllTaskApi, createTaskApi, updateTaskApi } from "../service/task.api";
 import { toJS } from "mobx";
 import { normalizeString } from "@/utils/normalizeString";
 import { TASK_CATEGORIES } from "@/config/task.config";
@@ -66,6 +66,28 @@ export const useTasks = () => {
     }
   };
 
+  // API TO UPDATE TASK STATUS (Optimistic UI)
+  const updateTaskStatus = async (taskId: string, newStatus: string) => {
+    const previousTask = taskStore.tasks.find((t: any) => t._id === taskId);
+    const previousStatus = previousTask?.status;
+    
+    if (previousStatus === newStatus) return; // No change needed
+
+    // Optimistic Update
+    taskStore.updateTaskStatus(taskId, newStatus);
+
+    try {
+      await updateTaskApi(taskId, { status: newStatus });
+    } catch (err: any) {
+      console.error("Error updating task status:", err);
+      // Rollback on failure
+      if (previousStatus) {
+        taskStore.updateTaskStatus(taskId, previousStatus);
+      }
+      taskStore.setError("Failed to update task status");
+    }
+  };
+
   return {
     tasks: toJS(taskStore.tasks) as TaskCardData[],
     task: toJS(taskStore.task) as TaskCardData,
@@ -73,6 +95,7 @@ export const useTasks = () => {
     error: taskStore.error,
     getAllTasks,
     createTask,
+    updateTaskStatus,
     columns,
     getTasksByColumn,
   };
