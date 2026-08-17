@@ -11,19 +11,39 @@ interface KanbanColumnProps {
   onAddClick?: () => void;
   addActionText?: string;
   onHeaderMenuClick?: () => void;
+  onDropTask?: (taskId: string) => void;
 }
 
 export const KanbanColumn: React.FC<KanbanColumnProps> = ({
+  id,
   title,
   children,
   onAddClick,
   addActionText = "Add Task",
   onHeaderMenuClick,
+  onDropTask,
 }) => {
   // Automatically derive action text if not explicitly provided (e.g., "To Do" -> "Add To Do" or custom)
 
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault(); // Necessary to allow dropping
+    e.dataTransfer.dropEffect = "move";
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const taskId = e.dataTransfer.getData("taskId");
+    if (taskId && onDropTask) {
+      onDropTask(taskId);
+    }
+  };
+
   return (
-    <div className="w-80 shrink-0 flex flex-col bg-sidebar-accent border border-base-border rounded-xl p-3 select-none">
+    <div
+      className="w-80 shrink-0 flex flex-col bg-sidebar-accent border border-base-border rounded-xl p-3 select-none"
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+    >
       {/* Column Header */}
       <div className="flex items-center justify-between pb-3">
         <div className="flex items-center gap-2">
@@ -55,7 +75,7 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({
       {/* Cards Container (Relative height, expands/collapses smoothly with Framer Motion layout) */}
       <motion.div
         layout
-        className="flex flex-col gap-3 flex-1 overflow-y-auto pr-1"
+        className="flex flex-col gap-3 flex-1 overflow-y-auto pr-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] scrollbar-none"
       >
         {React.Children.count(children) === 0 ? (
           <div className="flex flex-col items-center justify-center h-[100px] text-muted-foreground border-2 border-dashed border-base-border rounded-lg m-1 bg-background/50">

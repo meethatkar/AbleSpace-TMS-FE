@@ -10,3 +10,7 @@ export const createTaskApi = async (taskObj: TaskCardData) => {
     taskObj,
   });
 };
+
+export const updateTaskApi = async (taskId: string, updateData: Partial<TaskCardData>) => {
+  return await api.patch(`/tasks/${taskId}`, updateData);
+};
