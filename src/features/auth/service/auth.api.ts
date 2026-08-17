@@ -8,4 +8,14 @@ export const AuthApi = {
   googleLogin: async (idToken: string) => {
     return api.post("/auth/googleAuth", { token: idToken });
   },
+
+  getme: async () => {
+    return api.get("/user");
+  },
+
+  updateEmail: async (email: string) => {
+    return api.patch("/user", {
+      email,
+    });
+  },
 };
