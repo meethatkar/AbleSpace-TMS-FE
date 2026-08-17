@@ -39,8 +39,8 @@ export const ViewOptionsMenu: React.FC<ViewOptionsMenuProps> = ({
             className={cn(
               "flex-1 py-1.5 px-0 h-auto rounded-md font-medium transition-all",
               viewMode === option.id
-                ? "text-foreground hover:bg-transparent shadow-sm"
-                : "bg-background ",
+                ? "bg-background text-foreground shadow-sm hover:bg-background"
+                : "text-muted-foreground hover:text-foreground",
             )}
           >
             {option.icon}

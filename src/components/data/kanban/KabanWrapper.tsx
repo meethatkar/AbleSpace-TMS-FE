@@ -91,10 +91,12 @@ export const KanbanColumn: React.FC<KanbanColumnProps> = ({
         <Button
           onClick={onAddClick}
           variant="ghost"
-          className="justify-start py-2 px-3 font-medium hover:bg-sidebar-accent"
+          className="group justify-start py-2 px-3 font-medium hover:bg-sidebar-accent"
         >
-          <Plus size={16} className="text-foreground dark:text-background" />
-          <span>{addActionText}</span>
+          <Plus size={16} className="text-muted-foreground group-hover:text-foreground transition-colors" />
+          <span className="text-muted-foreground group-hover:text-foreground transition-colors">
+            {addActionText}
+          </span>
         </Button>
       </div>
     </div>

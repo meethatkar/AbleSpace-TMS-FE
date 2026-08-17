@@ -37,7 +37,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         "border border-base-border bg-background text-foreground hover:bg-neutral-100 dark:hover:bg-neutral-800",
       destructive:
         "bg-[var(--badge-bg)] text-[var(--badge-text)] hover:bg-red-100 dark:hover:bg-red-900/30",
-      ghost: "text-foreground dark:text-background",
+      ghost: "text-foreground hover:bg-neutral-100 dark:hover:bg-neutral-800",
     };
 
     const widths = {

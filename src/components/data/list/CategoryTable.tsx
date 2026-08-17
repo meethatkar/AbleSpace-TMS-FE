@@ -99,13 +99,13 @@ export const CategoryTable: React.FC<CategoryTableProps> = observer(({
               >
                 <button
                   onClick={onAddTask}
-                  className="flex items-center gap-2 text-xs font-semibold text-subtle-text cursor-pointer w-full text-left py-1"
+                  className="group flex items-center gap-2 text-xs font-semibold text-subtle-text cursor-pointer w-full text-left py-1"
                 >
                   <Plus
                     size={14}
-                    className="text-foreground dark:text-background"
+                    className="text-muted-foreground group-hover:text-foreground transition-colors"
                   />
-                  <span className="text-foreground font-medium text-xs">
+                  <span className="text-muted-foreground group-hover:text-foreground font-medium text-xs transition-colors">
                     Add Task
                   </span>
                 </button>
