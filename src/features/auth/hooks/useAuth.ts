@@ -55,6 +55,40 @@ export const useAuth = () => {
     }
   };
 
+  const getUser = async () => {
+    authStore.setLoading(true);
+    authStore.setError(null);
+    try {
+      const user = await AuthApi.getme();
+      authStore.setUser(user.data);
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message ||
+        error.message ||
+        "failed to get user profile. Please try again.";
+      authStore.setError(message);
+    } finally {
+      authStore.setLoading(false);
+    }
+  };
+
+  const updateUserEmail = async (email: string) => {
+    authStore.setLoading(true);
+    authStore.setError(null);
+    try {
+      const user = await AuthApi.updateEmail(email);
+      authStore.setUser(user.data);
+    } catch (error: any) {
+      const message =
+        error?.response?.data?.message ||
+        error.message ||
+        "failed to update user email. Please try again.";
+      authStore.setError(message);
+    } finally {
+      authStore.setLoading(false);
+    }
+  };
+
   return {
     user: authStore.user,
     isLoading: authStore.isLoading,
@@ -62,5 +96,7 @@ export const useAuth = () => {
     handleGuestLogin,
     handleGoogleLogin,
     logout: authStore.logout,
+    getUser,
+    updateUserEmail,
   };
 };
