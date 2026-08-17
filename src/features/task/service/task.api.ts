@@ -5,6 +5,10 @@ export const getAllTaskApi = async () => {
   return await api.get("/tasks");
 };
 
+export const getTaskByIdApi = async (taskId: string) => {
+  return await api.get(`/tasks/${taskId}`);
+};
+
 export const createTaskApi = async (taskObj: TaskCardData) => {
   return await api.post("/tasks", taskObj);
 };

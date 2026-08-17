@@ -1,12 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import { Smile, MoreHorizontal, Paperclip, Send } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import Image from "next/image";
+import { updateTaskApi } from "../service/task.api";
 
-export const TaskComments = () => {
+interface TaskCommentsProps {
+  taskId?: string;
+}
+
+export const TaskComments = ({ taskId }: TaskCommentsProps) => {
+  const [newComment, setNewComment] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSendComment = async () => {
+    const trimmed = newComment.trim();
+    if (!trimmed || !taskId) return;
+
+    setIsSaving(true);
+    try {
+      // Trigger 3: Explicit action — only save when the user clicks Send
+      await updateTaskApi(taskId, { updates: trimmed });
+      setNewComment("");
+    } catch (err) {
+      console.error("Failed to post comment:", err);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4">
-      <h3 className="font-medium">Subtasks</h3>
+      <h3 className="font-medium">Comments</h3>
 
       {/* Existing Comment */}
       <div className="border border-base-border rounded-lg p-4 flex flex-col gap-3 shadow-sm">
@@ -62,6 +86,9 @@ export const TaskComments = () => {
       <div className="border border-base-border rounded-lg p-3 flex items-center gap-2 mt-2 shadow-sm">
         <input
           type="text"
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSendComment()}
           placeholder="Add a comment..."
           className="flex-1 bg-transparent text-sm focus:outline-none placeholder:text-muted-foreground px-1"
         />
@@ -69,11 +96,18 @@ export const TaskComments = () => {
           <Button variant="ghost" className="h-8 w-8 p-0">
             <Paperclip size={16} />
           </Button>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <Send size={16} />
+          <Button
+            variant="ghost"
+            className="h-8 w-8 p-0"
+            onClick={handleSendComment}
+            disabled={isSaving || !newComment.trim()}
+            aria-label="Send comment"
+          >
+            <Send size={16} className={isSaving ? "opacity-50" : ""} />
           </Button>
         </div>
       </div>
     </div>
   );
 };
+
