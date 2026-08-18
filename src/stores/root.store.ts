@@ -4,6 +4,7 @@ import { AuthStore } from "@/features/auth/store/auth.store";
 import { UIStore } from "./ui.store";
 import { TaskStore } from "@/features/task/store/task.store";
 import { ViewStore } from "./view.store";
+import { ProjectStore } from "@/features/project/store/project.store";
 
 // Define the Root Store model
 export const RootStoreModel = types.model("RootStore", {
@@ -11,6 +12,7 @@ export const RootStoreModel = types.model("RootStore", {
   uiStore: types.optional(UIStore, {}),
   taskStore: types.optional(TaskStore, {}),
   viewStore: types.optional(ViewStore, {}),
+  projectStore: types.optional(ProjectStore, {}),
 });
 
 export type RootStoreInstance = Instance<typeof RootStoreModel>;
@@ -27,6 +29,7 @@ export function getRootStore(): RootStoreInstance {
       viewStore: {
         selectedFields: ["priority", "dueDate", "status", "labels", "members"],
       },
+      projectStore: {},
     });
     rootStore.authStore.initialize();
     rootStore.uiStore.initialize();

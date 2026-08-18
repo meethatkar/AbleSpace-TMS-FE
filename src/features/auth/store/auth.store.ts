@@ -7,7 +7,7 @@ export const UserModel = types.model("User", {
   username: types.string,
   fullName: types.string,
   email: types.string,
-  role: types.string,
+  role: types.maybeNull(types.string),
   profileImg: types.maybeNull(types.string),
 });
 

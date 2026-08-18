@@ -4,101 +4,49 @@ import { ViewHeader } from "@/components/data/ViewHeader";
 import { ProjectTable } from "../components/ProjectTable";
 import { Button } from "@/components/ui/Button";
 import { Plus } from "lucide-react";
-import { ViewOptionsMenu } from "@/components/ViewOptionMenu";
 import { FilterDropdown } from "@/components/FilterDropdown";
+import { ViewOptionsMenu } from "@/components/ViewOptionMenu";
+import { observer } from "mobx-react-lite";
+import { toJS } from "mobx";
+import { useProject } from "../hook/useProject";
 
-// Mock Data
-const MOCK_PROJECTS = [
-  {
-    _id: "1",
-    name: "Design Homepage",
-    priority: "High",
-    lead: "Jane Doe",
-    dueDate: "2026-09-12T00:00:00.000Z",
-  },
-  {
-    _id: "2",
-    name: "Develop Login Feature",
-    priority: "Low",
-    lead: "John Smith",
-    dueDate: "2026-09-15T00:00:00.000Z",
-  },
-  {
-    _id: "3",
-    name: "Test Payment Gateway",
-    priority: "Medium",
-    lead: "Alex Wong",
-    dueDate: "2026-09-18T00:00:00.000Z",
-  },
-];
+const ProjectPage = observer(() => {
+  const {
+    projects,
+    filteredProjects,
+    selectedFields,
+    selectedFilters,
+    searchQuery,
+    setSearchQuery,
+    toggleFilter,
+    toggleField,
+    getAllProjects,
+    isLoading,
+  } = useProject();
 
-const ProjectPage = () => {
-  const [selectedFields, setSelectedFields] = useState<string[]>([
-    "priority",
-    "lead",
-    "dueDate",
-  ]);
   const [isFieldsOpen, setIsFieldsOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilters, setSelectedFilters] = useState<
-    Record<string, string[]>
-  >({});
 
-  const handleToggleField = (fieldId: string) => {
-    setSelectedFields((prev) =>
-      prev.includes(fieldId)
-        ? prev.filter((id) => id !== fieldId)
-        : [...prev, fieldId],
-    );
-  };
+  // --- Search Debounce ---
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery || "");
 
-  const handleToggleFilter = (categoryId: string, optionId: string) => {
-    setSelectedFilters((prev) => {
-      const newFilters = { ...prev };
-      if (!newFilters[categoryId]) {
-        newFilters[categoryId] = [];
-      }
+  React.useEffect(() => {
+    const handler = setTimeout(() => {
+      setSearchQuery(localSearchQuery);
+    }, 800);
+    return () => clearTimeout(handler);
+  }, [localSearchQuery, setSearchQuery]);
 
-      const categoryArray = newFilters[categoryId];
-      if (categoryArray.includes(optionId)) {
-        newFilters[categoryId] = categoryArray.filter((id) => id !== optionId);
-      } else {
-        newFilters[categoryId] = [...categoryArray, optionId];
-      }
-
-      return newFilters;
-    });
-  };
-
-  const filteredProjects = useMemo(() => {
-    return MOCK_PROJECTS.filter((project) => {
-      // Search
-      if (
-        searchQuery &&
-        !project.name.toLowerCase().includes(searchQuery.toLowerCase())
-      ) {
-        return false;
-      }
-
-      // Filter (Priority) - only implementing Priority filter for mock data since it uses simple string matches
-      const priorityFilters = selectedFilters["priority"];
-      if (priorityFilters && priorityFilters.length > 0) {
-        if (!priorityFilters.includes(project.priority.toLowerCase())) {
-          return false;
-        }
-      }
-
-      return true;
-    });
-  }, [searchQuery, selectedFilters]);
+  React.useEffect(() => {
+    getAllProjects();
+  }, [getAllProjects]);
 
   return (
     <div className="px-6 bg-background h-full flex flex-col overflow-hidden font-sans">
       <ViewHeader
         title="Projects"
-        searchQuery={searchQuery}
-        onSearchChange={(e) => setSearchQuery(e.target.value)}
+        searchQuery={localSearchQuery}
+        onSearchChange={(e) => setLocalSearchQuery(e.target.value)}
         // onAddClick={() => console.log("Add Project Clicked")}
         onFieldsClick={() => setIsFieldsOpen(!isFieldsOpen)}
         isFieldsOpen={isFieldsOpen}
@@ -112,7 +60,7 @@ const ProjectPage = () => {
               { id: "dueDate", label: "Due Date" },
             ]}
             selectedFields={selectedFields}
-            onToggleField={handleToggleField}
+            onToggleField={toggleField}
           />
         }
         onCloseFieldsMenu={() => setIsFieldsOpen(false)}
@@ -121,8 +69,8 @@ const ProjectPage = () => {
         filterMenu={
           <FilterDropdown
             selectedFilters={selectedFilters as any}
-            onToggleFilter={handleToggleFilter}
-            tasks={MOCK_PROJECTS as any}
+            onToggleFilter={toggleFilter}
+            tasks={toJS(projects)}
           />
         }
         onCloseFilterMenu={() => setIsFilterOpen(false)}
@@ -138,15 +86,23 @@ const ProjectPage = () => {
       />
 
       <div className="flex-1 overflow-y-auto pb-6">
-        <ProjectTable
-          projects={filteredProjects}
-          selectedFields={selectedFields}
-          onAddProject={() => console.log("Add Project Clicked")}
-          onEditProject={(project) => console.log("Edit Project:", project._id)}
-        />
+        {isLoading ? (
+          <div className="flex items-center justify-center h-full text-muted-foreground">
+            Loading projects...
+          </div>
+        ) : (
+          <ProjectTable
+            projects={toJS(filteredProjects)}
+            selectedFields={selectedFields}
+            onAddProject={() => console.log("Add Project Clicked")}
+            onEditProject={(project) =>
+              console.log("Edit Project:", project._id)
+            }
+          />
+        )}
       </div>
     </div>
   );
-};
+});
 
 export default ProjectPage;

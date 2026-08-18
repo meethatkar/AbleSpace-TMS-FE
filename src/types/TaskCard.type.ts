@@ -13,7 +13,7 @@ export interface TaskCardData {
   name: string;
   description?: string;
   status: TaskStatus | string;
-  reporter: User;
+  reporter?: User;
   members?: User[];
   teams?: string;
   dueDate?: string;
