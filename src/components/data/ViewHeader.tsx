@@ -7,6 +7,8 @@ import { Button } from "../ui/Button";
 interface ViewHeaderProps {
   title: string;
   subtitle?: string;
+  /** When provided, the title becomes editable. Fires with the new value (debounced upstream). */
+  onTitleChange?: (newTitle: string) => void;
   searchQuery?: string;
   onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onFieldsClick?: () => void;
@@ -26,6 +28,7 @@ interface ViewHeaderProps {
 export const ViewHeader: React.FC<ViewHeaderProps> = ({
   title,
   subtitle,
+  onTitleChange,
   searchQuery,
   onSearchChange,
   onFieldsClick,
@@ -73,9 +76,20 @@ export const ViewHeader: React.FC<ViewHeaderProps> = ({
     <div className="flex items-center justify-between py-5 w-full">
       {/* Dynamic Title and Subtitle */}
       <div className="flex flex-col gap-2">
-        <h1 className="text-xl leading-none font-semibold text-foreground capitalize">
-          {title}
-        </h1>
+        {onTitleChange ? (
+          <h1
+            contentEditable
+            suppressContentEditableWarning
+            onBlur={(e) => onTitleChange(e.currentTarget.textContent?.trim() ?? "")}
+            className="text-xl leading-none font-semibold text-foreground capitalize outline-none focus:border-b focus:border-base-border cursor-text"
+          >
+            {title}
+          </h1>
+        ) : (
+          <h1 className="text-xl leading-none font-semibold text-foreground capitalize">
+            {title}
+          </h1>
+        )}
         {subtitle && (
           <p className="text-sm text-muted-foreground">{subtitle}</p>
         )}

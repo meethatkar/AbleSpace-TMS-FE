@@ -15,7 +15,10 @@ import { SignalIcon } from "@/components/icons/SignalIcon";
 import { PRIORITY_CONFIG, STATUS_OPTIONS } from "@/config/task.config";
 import { TextWrapper } from "@/components/ui/TextWrapper";
 import { TaskCardData } from "@/types/TaskCard.type";
+import { ProjectData } from "@/features/project/Project.types";
 import { formatDate } from "@/utils/DateFormatter";
+
+export type FilterDropdownData = TaskCardData | ProjectData;
 
 // --- 1. Static Data & Types ---
 
@@ -55,29 +58,33 @@ const PRIORITY_OPTIONS: FilterOption[] = [
 // --- 2. Component Implementation ---
 
 // Helper function to generate dynamic options from tasks list
-export const generateFilterCategories = (tasks: TaskCardData[]): FilterCategory[] => {
+export const generateFilterCategories = (
+  tasks: FilterDropdownData[],
+): FilterCategory[] => {
   const reportersMap = new Map<string, FilterOption>();
   const membersMap = new Map<string, FilterOption>();
   const dueDatesSet = new Set<string>();
   const teamsSet = new Set<string>();
   const labelsSet = new Set<string>();
 
-  tasks.forEach((task) => {
-    if (task.reporter?._id) {
-      reportersMap.set(task.reporter._id, {
-        id: task.reporter._id,
-        label: task.reporter.profileImg ? (
+  tasks.forEach((item) => {
+    // For tasks we use reporter, for projects we use lead
+    const user = (item as any).reporter || (item as any).lead;
+    if (user?._id) {
+      reportersMap.set(user._id, {
+        id: user._id,
+        label: user.profileImg ? (
           <TextWrapper
-            image={task.reporter.profileImg}
-            text={task.reporter.fullName || task.reporter.username}
+            image={user.profileImg}
+            text={user.fullName || user.username}
           />
         ) : (
-          task.reporter.fullName || task.reporter.username
+          user.fullName || user.username
         ),
       });
     }
-    if (task.members) {
-      task.members.forEach((member) => {
+    if (item.members) {
+      item.members.forEach((member: any) => {
         if (member._id) {
           membersMap.set(member._id, {
             id: member._id,
@@ -93,10 +100,10 @@ export const generateFilterCategories = (tasks: TaskCardData[]): FilterCategory[
         }
       });
     }
-    if (task.dueDate) dueDatesSet.add(task.dueDate);
-    if (task.teams) teamsSet.add(task.teams);
-    if (task.labels) {
-      task.labels.forEach((label) => labelsSet.add(label));
+    if (item.dueDate) dueDatesSet.add(item.dueDate);
+    if (item.teams) teamsSet.add(item.teams);
+    if (item.labels) {
+      item.labels.forEach((label: string) => labelsSet.add(label));
     }
   });
 
@@ -167,7 +174,7 @@ export const FilterDropdown: React.FC<FilterDropdownProps> = ({
   // Generate dynamic options from tasks list
   const filterCategories = React.useMemo<FilterCategory[]>(
     () => generateFilterCategories(tasks),
-    [tasks]
+    [tasks],
   );
 
   return (

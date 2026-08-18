@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { observer } from "mobx-react-lite";
 import { useTasks } from "../hooks/useTasks";
 import { TaskCardData } from "@/types/TaskCard.type";
@@ -14,10 +15,10 @@ import { KabanCard } from "@/components/data/kanban/KabanCard";
 import { FilterDropdown } from "@/components/FilterDropdown";
 
 const TaskPage = observer(() => {
+  const router = useRouter();
   const {
     tasks = [],
     getAllTasks,
-    createTask,
     getTasksByColumn,
     updateTaskStatus,
   } = useTasks();
@@ -103,6 +104,10 @@ const TaskPage = observer(() => {
     uiStore.setAddTaskModalOpen(true);
   };
 
+  const handleEditTask = (task: TaskCardData) => {
+    router.push(`/task/${task._id}`);
+  };
+
   return (
     <div className="px-6 bg-background h-full flex flex-col overflow-hidden font-sans">
       <ViewHeader
@@ -129,7 +134,11 @@ const TaskPage = observer(() => {
       {/* Main Content Area */}
       <div className="flex-1 overflow-y-auto pb-6">
         {viewMode === "list" ? (
-          <DataList tasks={displayTasks} onAddTask={handleAddTask} />
+          <DataList
+            tasks={displayTasks}
+            onAddTask={handleAddTask}
+            onEditTask={handleEditTask}
+          />
         ) : (
           <div className="flex gap-5 overflow-x-auto items-start h-full min-h-0 pb-4">
             {TASK_CATEGORIES.map((col) => {
@@ -143,7 +152,11 @@ const TaskPage = observer(() => {
                   onDropTask={(taskId) => updateTaskStatus(taskId, col.id)}
                 >
                   {colTasks.map((task) => (
-                    <KabanCard key={task._id} task={task} />
+                    <KabanCard
+                      key={task._id}
+                      task={task}
+                      onClick={() => handleEditTask(task)}
+                    />
                   ))}
                 </KanbanColumn>
               );

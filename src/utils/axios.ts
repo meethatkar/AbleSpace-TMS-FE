@@ -19,3 +19,23 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+// Automatically handle token expiration
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      if (typeof window !== "undefined") {
+        // Clear token
+        localStorage.removeItem("token");
+
+        // Redirect to login only if not already on the auth page
+        if (!window.location.pathname.includes("/auth")) {
+          // Use absolute URL to avoid Next.js no-location-assign-relative-destination lint error
+          window.location.href = `${window.location.origin}/auth`;
+        }
+      }
+    }
+    return Promise.reject(error);
+  },
+);

@@ -2,6 +2,7 @@ import { getRootStore, useStore } from "@/stores/root.store";
 import { TaskCardData } from "@/types/TaskCard.type";
 import {
   getAllTaskApi,
+  getTaskByIdApi,
   createTaskApi,
   updateTaskApi,
 } from "../service/task.api";
@@ -94,14 +95,62 @@ export const useTasks = () => {
     }
   };
 
+  // API TO GET SINGLE TASK BY ID
+  const getTaskById = async (taskId: string) => {
+    taskStore.setTask(null);
+    taskStore.setLoading(true);
+    taskStore.setError(null);
+    try {
+      const response = await getTaskByIdApi(taskId);
+      const task = response.data;
+      taskStore.setTask(task);
+      return task as TaskCardData;
+    } catch (err: any) {
+      console.error("Error in getTaskById:", err);
+      const msg =
+        err?.response?.data?.message ||
+        err.message ||
+        "Failed to fetch task. Please try again.";
+      taskStore.setError(msg);
+    } finally {
+      taskStore.setLoading(false);
+    }
+  };
+
+  /**
+   * Generic optimistic field update.
+   * Instantly applies the change in the store and fires the PATCH API.
+   * Reverts on failure.
+   */
+  const updateTaskField = async <K extends keyof TaskCardData>(
+    taskId: string,
+    field: K,
+    value: TaskCardData[K],
+  ) => {
+    const previousValue = taskStore.patchTaskField(taskId, field, value);
+
+    try {
+      await updateTaskApi(taskId, { [field]: value } as Partial<TaskCardData>);
+    } catch (err: any) {
+      console.error(`Error updating task field "${field}":`, err);
+      // Rollback to previous value
+      if (previousValue !== undefined) {
+        taskStore.patchTaskField(taskId, field, previousValue);
+      }
+      taskStore.setError(`Failed to save "${field}". Please try again.`);
+    }
+  };
+
   return {
     tasks: toJS(taskStore.tasks) as TaskCardData[],
     task: toJS(taskStore.task) as TaskCardData,
     isLoading: taskStore.isLoading,
     error: taskStore.error,
     getAllTasks,
+    getTaskById,
     createTask,
     updateTaskStatus,
+    updateTaskField,
     columns,
     getTasksByColumn,
   };

@@ -15,6 +15,9 @@ import { Calendar } from "@/components/Calendar";
 import { Badge } from "@/components/ui/Badge";
 import { TextWrapper } from "@/components/ui/TextWrapper";
 import { STATUS_OPTIONS, PRIORITY_OPTIONS_LIST } from "@/config/task.config";
+import { useTasks } from "../hooks/useTasks";
+import { TaskCardData } from "@/types/TaskCard.type";
+import { User } from "@/types/User.type";
 
 function useOnClickOutside(
   ref: React.RefObject<HTMLElement | null>,
@@ -59,7 +62,14 @@ const getPriorityIcon = (id: string, color: string) => {
   return <span className="w-[14px] h-[14px]" />;
 };
 
-export const TaskDetailsSidebar = () => {
+export const TaskDetailsSidebar = ({
+  task,
+  taskId,
+}: {
+  task?: TaskCardData | null;
+  taskId?: string;
+}) => {
+  const { updateTaskField } = useTasks();
   const [openPopover, setOpenPopover] = useState<
     "status" | "priority" | "dates" | null
   >(null);
@@ -81,14 +91,48 @@ export const TaskDetailsSidebar = () => {
     () => openPopover === "dates" && setOpenPopover(null),
   );
 
-  const [selectedStatus, setSelectedStatus] = useState(STATUS_OPTIONS[4]); // Backlog
+  // Initialise from real task data; fall back to sensible defaults
+  const [selectedStatus, setSelectedStatus] = useState(
+    STATUS_OPTIONS.find((o) =>
+      o.label.toLowerCase() === task?.status?.toLowerCase(),
+    ) ?? STATUS_OPTIONS[0],
+  );
   const [selectedPriority, setSelectedPriority] = useState(
-    PRIORITY_OPTIONS_LIST[1],
-  ); // High
+    PRIORITY_OPTIONS_LIST.find((o) =>
+      o.label.toLowerCase() === task?.priority?.toLowerCase(),
+    ) ?? PRIORITY_OPTIONS_LIST[2],
+  );
   const [dateRange, setDateRange] = useState<{ from: Date | undefined; to?: Date }>({
-    from: new Date("2026-01-10"),
+    from: task?.dueDate ? new Date(task.dueDate) : undefined,
     to: undefined,
   });
+
+  // Sync state when task prop changes (e.g., after data loads)
+  useEffect(() => {
+    if (!task) return;
+    const matchStatus = STATUS_OPTIONS.find(
+      (o) => o.label.toLowerCase() === task.status?.toLowerCase(),
+    );
+    if (matchStatus) setSelectedStatus(matchStatus);
+
+    const matchPriority = PRIORITY_OPTIONS_LIST.find(
+      (o) => o.label.toLowerCase() === task.priority?.toLowerCase(),
+    );
+    if (matchPriority) setSelectedPriority(matchPriority);
+
+    setDateRange({ from: task.dueDate ? new Date(task.dueDate) : undefined, to: undefined });
+  }, [task]);
+
+  // Resolve members for display
+  const members = (task?.members ?? []).filter(
+    (m): m is User => typeof m === "object" && m !== null,
+  );
+
+  const reporter =
+    task?.reporter && typeof task.reporter === "object"
+      ? (task.reporter as User)
+      : null;
+
   return (
     <div className="flex flex-col gap-4">
       {/* Details Section */}
@@ -140,6 +184,7 @@ export const TaskDetailsSidebar = () => {
                           onClick={() => {
                             setSelectedStatus(opt);
                             setOpenPopover(null);
+                            if (taskId) updateTaskField(taskId, "status", opt.label);
                           }}
                         >
                           <TextWrapper
@@ -198,6 +243,7 @@ export const TaskDetailsSidebar = () => {
                           onClick={() => {
                             setSelectedPriority(opt);
                             setOpenPopover(null);
+                            if (taskId) updateTaskField(taskId, "priority", opt.label);
                           }}
                         >
                           <TextWrapper
@@ -219,11 +265,35 @@ export const TaskDetailsSidebar = () => {
           <SidebarRow
             label="Members"
             value={
-              <TextWrapper
-                className="text-foreground cursor-pointer group/member"
-                icon={<Users size={14} className="text-muted-foreground group-hover/member:text-foreground transition-colors" />}
-                text="Add members"
-              />
+              members.length > 0 ? (
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {members.map((m) => (
+                    <div
+                      key={m._id}
+                      className="flex items-center gap-1.5 px-2 py-0.5 bg-neutral-100 dark:bg-neutral-800 rounded-full text-xs font-medium"
+                      title={m.fullName}
+                    >
+                      <Image
+                        height={80}
+                        width={80}
+                        src={
+                          m.profileImg ||
+                          `https://api.dicebear.com/7.x/avataaars/svg?seed=${m.username}`
+                        }
+                        alt={m.fullName}
+                        className="w-4 h-4 rounded-full object-cover"
+                      />
+                      <span>{m.fullName}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <TextWrapper
+                  className="text-foreground cursor-pointer group/member"
+                  icon={<Users size={14} className="text-muted-foreground group-hover/member:text-foreground transition-colors" />}
+                  text="Add members"
+                />
+              )
             }
           />
           <SidebarRow
@@ -275,9 +345,12 @@ export const TaskDetailsSidebar = () => {
                       mode="range"
                       selected={dateRange}
                       onSelect={(range: any) => {
-                        setDateRange(
-                          range || { from: undefined, to: undefined },
-                        );
+                        const newRange = range || { from: undefined, to: undefined };
+                        setDateRange(newRange);
+                        // Save dueDate when the end date is selected
+                        if (taskId && newRange.to) {
+                          updateTaskField(taskId, "dueDate", newRange.to.toISOString());
+                        }
                       }}
                     />
                   </div>
@@ -287,15 +360,54 @@ export const TaskDetailsSidebar = () => {
           />
           <SidebarRow
             label="Labels"
-            value={<span className="text-muted-foreground text-sm">—</span>}
+            value={
+              (task?.labels ?? []).length > 0 ? (
+                <div className="flex flex-wrap gap-1">
+                  {task!.labels!.map((l) => (
+                    <span
+                      key={l}
+                      className="px-2 py-0.5 rounded-full text-xs bg-neutral-100 dark:bg-neutral-800 text-foreground font-medium"
+                    >
+                      {l}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <span className="text-muted-foreground text-sm">—</span>
+              )
+            }
           />
           <SidebarRow
             label="Teams"
-            value={<span className="text-muted-foreground text-sm">—</span>}
+            value={
+              task?.teams ? (
+                <span className="text-sm text-foreground font-medium">{task.teams}</span>
+              ) : (
+                <span className="text-muted-foreground text-sm">—</span>
+              )
+            }
           />
           <SidebarRow
             label="Reporter"
-            value={<span className="text-muted-foreground text-sm">—</span>}
+            value={
+              reporter ? (
+                <div className="flex items-center gap-1.5 px-2 py-0.5 bg-neutral-100 dark:bg-neutral-800 rounded-full text-xs font-medium">
+                  <Image
+                    height={80}
+                    width={80}
+                    src={
+                      reporter.profileImg ||
+                      `https://api.dicebear.com/7.x/avataaars/svg?seed=${reporter.username}`
+                    }
+                    alt={reporter.fullName}
+                    className="w-4 h-4 rounded-full object-cover"
+                  />
+                  <span>{reporter.fullName}</span>
+                </div>
+              ) : (
+                <span className="text-muted-foreground text-sm">—</span>
+              )
+            }
           />
         </div>
       </div>

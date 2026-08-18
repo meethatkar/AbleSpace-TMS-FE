@@ -57,6 +57,21 @@ export const TaskStore = types
         self.tasks[index] = cast(updatedTask);
       }
     },
+    /**
+     * Generic optimistic field patcher for a single task.
+     * Returns the previous value so the caller can roll back on API failure.
+     */
+    patchTaskField<K extends keyof TaskCardData>(
+      taskId: string,
+      field: K,
+      value: TaskCardData[K],
+    ): TaskCardData[K] | undefined {
+      const task = self.tasks.find((t) => t._id === taskId) as any;
+      if (!task) return undefined;
+      const prev = task[field];
+      task[field] = value;
+      return prev;
+    },
     updateTaskStatus(taskId: string, newStatus: string) {
       const task = self.tasks.find((t) => t._id === taskId);
       if (task) {
@@ -70,3 +85,4 @@ export const TaskStore = types
       }
     },
   }));
+
