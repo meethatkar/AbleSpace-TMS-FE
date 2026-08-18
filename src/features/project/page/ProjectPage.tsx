@@ -70,7 +70,7 @@ const ProjectPage = observer(() => {
           <FilterDropdown
             selectedFilters={selectedFilters as any}
             onToggleFilter={toggleFilter}
-            tasks={toJS(projects)}
+            tasks={toJS(projects) as any}
           />
         }
         onCloseFilterMenu={() => setIsFilterOpen(false)}
