@@ -42,19 +42,19 @@ export const TaskStore = types
       self.error = msg;
     },
     setTasks(tasks: TaskCardData[]) {
-      self.tasks = cast(tasks);
+      self.tasks = cast(tasks as any);
     },
     setTask(task: TaskCardData | null) {
-      self.task = cast(task);
+      self.task = cast(task as any);
       //The cast helper tells TypeScript to safely treat the input snapshot/plain object as assignable to the MST instance property.
     },
     addTask(task: TaskCardData) {
-      self.tasks.push(cast(task));
+      self.tasks.push(cast(task as any));
     },
     updateTask(updatedTask: TaskCardData) {
       const index = self.tasks.findIndex((t) => t._id === updatedTask._id);
       if (index !== -1) {
-        self.tasks[index] = cast(updatedTask);
+        self.tasks[index] = cast(updatedTask as any);
       }
     },
     /**

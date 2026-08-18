@@ -1,5 +1,5 @@
 import { api } from "@/utils/axios";
-import { ProjectData } from "../Project.types";
+import { CreateProjectPayload } from "../Project.types";
 
 const BASE_URL = "/project";
 
@@ -11,7 +11,7 @@ export const projectApi = {
   },
 
   // Create a new project
-  createProject: async (projectData: ProjectData) => {
+  createProject: async (projectData: CreateProjectPayload) => {
     const response = await api.post(BASE_URL, projectData);
     return response.data;
   },

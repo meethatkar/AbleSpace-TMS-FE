@@ -57,10 +57,10 @@ export const KabanCard: React.FC<KabanCardProps> = ({
           {/* Reporter details */}
           <div className="flex items-center gap-1.5">
             <TextWrapper
-              image={task.reporter.profileImg ?? undefined}
+              image={(typeof task.reporter === "object" && task.reporter !== null) ? (task.reporter as any).profileImg ?? undefined : undefined}
               text={
-                task.reporter
-                  ? task.reporter.fullName || task.reporter.username
+                (typeof task.reporter === "object" && task.reporter !== null)
+                  ? (task.reporter as any).fullName || (task.reporter as any).username
                   : "Unassigned"
               }
               className="!p-0 !bg-transparent hover:!bg-transparent text-xs text-foreground font-medium"
