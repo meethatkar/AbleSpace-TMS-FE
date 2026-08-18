@@ -7,9 +7,14 @@ export const api = axios.create({
   },
 });
 
-// For protected routes
-// Automatically attach JWT token if available in local storage
-api.interceptors.request.use((config) => {
+export const localApi = axios.create({
+  baseURL: "/api",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+const requestInterceptor = (config: any) => {
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("token");
     if (token) {
@@ -18,7 +23,12 @@ api.interceptors.request.use((config) => {
     }
   }
   return config;
-});
+};
+
+// For protected routes
+// Automatically attach JWT token if available in local storage
+api.interceptors.request.use(requestInterceptor);
+localApi.interceptors.request.use(requestInterceptor);
 
 // Automatically handle token expiration
 api.interceptors.response.use(

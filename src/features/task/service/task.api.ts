@@ -1,21 +1,21 @@
 import { TaskCardData } from "@/types/TaskCard.type";
-import { api } from "@/utils/axios";
+import { localApi } from "@/utils/axios";
 
 export const getAllTaskApi = async () => {
-  return await api.get("/tasks");
+  return await localApi.get("/tasks");
 };
 
 export const getTaskByIdApi = async (taskId: string) => {
-  return await api.get(`/tasks/${taskId}`);
+  return await localApi.get(`/tasks/${taskId}`);
 };
 
 export const createTaskApi = async (taskObj: TaskCardData) => {
-  return await api.post("/tasks", taskObj);
+  return await localApi.post("/tasks", taskObj);
 };
 
 export const updateTaskApi = async (
   taskId: string,
   updateData: Partial<TaskCardData>,
 ) => {
-  return await api.patch(`/tasks/${taskId}`, updateData);
+  return await localApi.patch(`/tasks/${taskId}`, updateData);
 };
