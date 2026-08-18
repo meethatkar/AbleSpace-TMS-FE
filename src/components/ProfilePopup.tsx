@@ -14,6 +14,7 @@ import {
   Monitor,
 } from "lucide-react";
 import { User } from "@/types/User.type";
+import React from "react";
 
 const COLOR_OPTIONS = [
   { id: "amber", label: "Amber", cssVar: "var(--color-amber)" },
@@ -35,6 +36,13 @@ export const ProfilePopup = observer(
     const { theme, setTheme } = useTheme();
     const { colorMode, changeColorMode, mounted } = useColorMode();
     const router = useRouter();
+    const [openMenu, setOpenMenu] = React.useState<"theme" | "color" | null>(
+      null,
+    );
+
+    const toggleMenu = (menu: "theme" | "color") => {
+      setOpenMenu(openMenu === menu ? null : menu);
+    };
 
     return (
       <div className="absolute -left-3 z-100 top-12.5 ml-2 w-60 bg-background rounded-xl border border-base-border shadow-lg flex flex-col pt-6 pb-2 z-50 font-sans cursor-default">
@@ -77,17 +85,24 @@ export const ProfilePopup = observer(
         <div className="flex flex-col border-t border-base-border pt-1">
           {/* Theme Dropdown */}
           <div className="group relative">
-            <div className="flex cursor-default items-center justify-between px-4 py-2.5 text-sm transition-colors hover:bg-sidebar-accent">
+            <div
+              className="flex cursor-pointer items-center justify-between px-4 py-2.5 text-sm transition-colors hover:bg-sidebar-accent"
+              onClick={() => toggleMenu("theme")}
+            >
               <div className="flex items-center gap-3">
                 <Sun className="h-4 w-4 text-foreground/70" />
                 <span>Change Theme</span>
               </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              <ChevronRight
+                className={`h-4 w-4 text-muted-foreground transition-transform md:rotate-0 ${openMenu === "theme" ? "rotate-90" : ""}`}
+              />
             </div>
 
             {/* Theme Submenu */}
-            <div className="absolute left-full top-0 hidden pl-1 group-hover:block z-50 min-w-44">
-              <div className="rounded-xl border border-base-border bg-background p-1.5 shadow-lg">
+            <div
+              className={`md:absolute md:left-full md:top-0 md:pl-1 z-50 md:min-w-44 w-full ${openMenu === "theme" ? "block" : "hidden md:group-hover:block"}`}
+            >
+              <div className="md:rounded-xl md:border border-base-border bg-sidebar-accent/50 md:bg-background p-1.5 md:shadow-lg rounded-lg mx-2 md:mx-0 mb-2 md:mb-0 w-[calc(100%-16px)] md:w-auto">
                 <div className="mb-1 px-3 py-1.5 text-xs text-muted-foreground">
                   Theme
                 </div>
@@ -121,17 +136,24 @@ export const ProfilePopup = observer(
 
           {/* Color Mode Dropdown */}
           <div className="group relative">
-            <div className="flex cursor-default items-center justify-between px-4 py-2.5 text-sm transition-colors hover:bg-sidebar-accent">
+            <div
+              className="flex cursor-pointer items-center justify-between px-4 py-2.5 text-sm transition-colors hover:bg-sidebar-accent"
+              onClick={() => toggleMenu("color")}
+            >
               <div className="flex items-center gap-3">
                 <div className="w-4 h-4 rounded-sm bg-foreground/80 flex items-center justify-center" />
                 <span>Color Mode</span>
               </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              <ChevronRight
+                className={`h-4 w-4 text-muted-foreground transition-transform md:rotate-0 ${openMenu === "color" ? "rotate-90" : ""}`}
+              />
             </div>
 
             {/* Color Mode Submenu */}
-            <div className="absolute left-full top-0 hidden pl-1 group-hover:block z-50 min-w-44">
-              <div className="rounded-xl border border-base-border bg-background p-1.5 shadow-lg">
+            <div
+              className={`md:absolute md:left-full md:top-0 md:pl-1 z-50 md:min-w-44 w-full ${openMenu === "color" ? "block" : "hidden md:group-hover:block"}`}
+            >
+              <div className="md:rounded-xl md:border border-base-border bg-sidebar-accent/50 md:bg-background p-1.5 md:shadow-lg rounded-lg mx-2 md:mx-0 mb-2 md:mb-0 w-[calc(100%-16px)] md:w-auto">
                 <div className="mb-1 px-3 py-1.5 text-xs text-muted-foreground">
                   Color Mode
                 </div>
