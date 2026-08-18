@@ -9,14 +9,15 @@ import { usePathname } from "next/navigation";
 import { ProfileSidebarContent } from "./ProfileSidebarContent";
 import { ProfilePopup } from "./ProfilePopup";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import Link from "next/link";
 
 const NAV_ITEMS = [
-  { id: "tasks", label: "Tasks", Icon: LayoutGrid },
-  { id: "projects", label: "Projects", Icon: Folder },
+  { id: "tasks", label: "Tasks", Icon: LayoutGrid, href: "/" },
+  { id: "projects", label: "Projects", Icon: Folder, href: "/project" },
 ] as const;
 
 export default observer(function Sidebar() {
-  const { isOpen } = useSidebar();
+  const { isOpen, toggleSidebar } = useSidebar();
   const [activeTab, setActiveTab] = useState("tasks");
   const [showPopup, setShowPopup] = useState(false);
   const popupRef = React.useRef<HTMLDivElement>(null);
@@ -48,9 +49,17 @@ export default observer(function Sidebar() {
   }, [showPopup]);
 
   return (
-    <aside
-      data-collapsed={!isOpen}
-      className="flex flex-col justify-between h-screen bg-sidebar-bg border-r border-foreground/10 font-sans transition-all duration-300 ease-in-out relative  z-50 select-none"
+    <>
+      {/* Mobile Backdrop overlay to close sidebar by clicking outside */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={toggleSidebar}
+        />
+      )}
+      <aside
+        data-collapsed={!isOpen}
+        className="flex flex-col justify-between h-screen bg-sidebar-bg border-r border-foreground/10 font-sans transition-all duration-300 ease-in-out relative  z-50 select-none"
     >
       <div
         className={`p-3 space-y-6 flex-1 ${
@@ -108,30 +117,31 @@ export default observer(function Sidebar() {
 
               {/* Navigation Links */}
               <div className="space-y-0.5">
-                {NAV_ITEMS.map(({ id, label, Icon }) => {
+                {NAV_ITEMS.map(({ id, label, Icon, href }) => {
                   const isActive = activeTab === id;
                   return (
-                    <TextWrapper
-                      key={id}
-                      icon={
-                        <Icon
-                          size={18}
-                          className={
-                            isActive
-                              ? "text-primary transition-colors"
-                              : "text-foreground/45"
-                          }
-                        />
-                      }
-                      text={label}
-                      onClick={() => setActiveTab(id)}
-                      className={`w-full flex items-center justify-start px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 group gap-3 overflow-hidden ${
-                        isActive
-                          ? "bg-sidebar-accent font-medium"
-                          : "hover:bg-foreground/3"
-                      }`}
-                      title={label}
-                    />
+                    <Link href={`${href}`} key={id}>
+                      <TextWrapper
+                        icon={
+                          <Icon
+                            size={18}
+                            className={
+                              isActive
+                                ? "text-primary transition-colors"
+                                : "text-foreground/45"
+                            }
+                          />
+                        }
+                        text={label}
+                        onClick={() => setActiveTab(id)}
+                        className={`w-full flex items-center justify-start px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200 group gap-3 overflow-hidden ${
+                          isActive
+                            ? "bg-sidebar-accent font-medium"
+                            : "hover:bg-foreground/3"
+                        }`}
+                        title={label}
+                      />
+                    </Link>
                   );
                 })}
               </div>
@@ -139,6 +149,7 @@ export default observer(function Sidebar() {
           </>
         )}
       </div>
-    </aside>
+      </aside>
+    </>
   );
 });
