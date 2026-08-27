@@ -43,6 +43,7 @@ export const AuthStore = types
       self.user = null;
       self.error = null;
       self.token = null;
+      self.isLoading = false;
       if (typeof window !== "undefined") {
         localStorage.removeItem("token");
       }
