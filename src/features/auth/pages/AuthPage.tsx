@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { TextWrapper } from "@/components/ui/TextWrapper";
+import { Loader } from "@/components/ui/Loader";
 import { useAuth } from "../hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { GoogleLogin } from "@react-oauth/google";
@@ -34,7 +35,7 @@ const AuthPage = () => {
   if (isChecking) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary" />
+        <Loader size="lg" color="primary" />
       </div>
     );
   }
@@ -79,9 +80,10 @@ const AuthPage = () => {
               width="full"
               className="rounded-full py-3 text-sm font-semibold hover:cursor-pointer"
               onClick={onGuestLogin}
-              disabled={isLoading}
+              isLoading={isLoading}
+              loadingText="Signing in..."
             >
-              {isLoading ? "Signing in..." : "Continue as Guest"}
+              Continue as Guest
             </Button>
 
             {/* Google OAuth — outline button using TextWrapper with image prop */}
@@ -90,7 +92,7 @@ const AuthPage = () => {
                 variant="outline"
                 width="full"
                 className="rounded-full py-3 text-sm font-medium"
-                disabled={isLoading}
+                isLoading={isLoading}
               >
                 <TextWrapper
                   icon={<GoogleIcon />}

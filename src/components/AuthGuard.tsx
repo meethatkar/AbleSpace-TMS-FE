@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { useStore } from "@/stores/root.store";
 import { useRouter } from "next/navigation";
+import { Loader } from "@/components/ui/Loader";
 
 export const AuthGuard = observer(
   ({ children }: { children: React.ReactNode }) => {
@@ -24,7 +25,7 @@ export const AuthGuard = observer(
     if (isChecking) {
       return (
         <div className="flex h-screen w-screen items-center justify-center bg-background text-foreground">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary" />
+          <Loader size="lg" color="primary" />
         </div>
       );
     }
