@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { observer } from "mobx-react-lite";
 import { Button } from "@/components/ui/Button";
 import { TextWrapper } from "@/components/ui/TextWrapper";
 import { Loader } from "@/components/ui/Loader";
@@ -8,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { GoogleLogin } from "@react-oauth/google";
 import { GoogleIcon, PyramidIcon } from "@/components/ui/Icons";
 
-const AuthPage = () => {
+const AuthPage = observer(() => {
   const router = useRouter();
   const { handleGuestLogin, handleGoogleLogin, isLoading, error } = useAuth();
   const [isChecking, setIsChecking] = useState(true);
@@ -93,6 +94,7 @@ const AuthPage = () => {
                 width="full"
                 className="rounded-full py-3 text-sm font-medium"
                 isLoading={isLoading}
+                loadingText="Signing in..."
               >
                 <TextWrapper
                   icon={<GoogleIcon />}
@@ -117,7 +119,6 @@ const AuthPage = () => {
                     onError={() => {
                       console.error("Google Login Failed");
                     }}
-                    useOneTap
                   />
                 </div>
               )}
@@ -149,6 +150,6 @@ const AuthPage = () => {
       </div>
     </div>
   );
-};
+});
 
 export default AuthPage;
